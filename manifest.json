@@ -1,7 +1,7 @@
 {
   "name": "Retro TV 90s",
   "short_name": "RetroTV",
-  "start_url": "/RetroTV--/",
+  "start_url": "/RetroTV-/",
   "display": "standalone",
   "background_color": "#000000",
   "theme_color": "#000000",
