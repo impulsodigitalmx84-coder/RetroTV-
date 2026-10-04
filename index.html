@@ -6,7 +6,6 @@
   <title>Retro TV 90s</title>
   <link rel="manifest" href="manifest.json">
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  
   <style>
     * {
       box-sizing: border-box;
@@ -18,273 +17,228 @@
     body {
       background-color: #000;
       color: #fff;
-      font-family: monospace, sans-serif;
+      font-family: 'Courier New', Courier, monospace;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
       min-height: 100vh;
-      padding: 10px;
+      overflow: hidden;
     }
 
-    /* CONTENEDOR PRINCIPAL DEL TELEVISOR */
-    .tv-container {
-      width: 100%;
-      max-width: 600px;
-      border-radius: 20px;
+    .tv-frame {
+      background: #3d2314;
+      border: 12px solid #26140a;
+      border-radius: 25px;
       padding: 20px;
-      transition: all 0.3s ease;
+      box-shadow: 0 0 30px rgba(0,0,0,0.8);
+      width: 95vw;
+      max-width: 650px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
     }
 
-    /* 6 ESTILOS DE MARCO DE TV */
-    .tv-madera       { background: #5a2a18; border: 8px solid #3b190e; }
-    .tv-neon         { background: #110022; border: 8px solid #ff007f; box-shadow: 0 0 15px #ff007f; }
-    .tv-transparente { background: rgba(120, 0, 180, 0.4); border: 8px solid rgba(255, 255, 255, 0.3); }
-    .tv-gris         { background: #3a3a3a; border: 8px solid #222; }
-    .tv-rojo         { background: #a81c1c; border: 8px solid #6b0f0f; }
-    .tv-portatil     { background: #2b3a42; border: 8px solid #141d22; }
-
-    /* PANTALLA CON EFECTO CRT Y CURVATURA */
-    .pantalla-wrapper {
+    .screen-container {
       position: relative;
       width: 100%;
-      aspect-ratio: 4 / 3;
-      background: #000;
-      border-radius: 25px;
+      height: 60vh;
+      max-height: 400px;
+      background-color: #050505;
+      border-radius: 30px;
       overflow: hidden;
-      box-shadow: inset 0 0 40px rgba(0,0,0,0.9), 0 0 10px rgba(0,0,0,0.5);
-      border: 4px solid #1a1a1a;
-    }
-
-    .pantalla-wrapper::after {
-      content: " ";
-      display: block;
-      position: absolute;
-      top: 0; left: 0; bottom: 0; right: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%), 
-                  linear-gradient(90deg, rgba(255, 0, 0, 0.04), rgba(0, 255, 0, 0.01), rgba(0, 0, 255, 0.04));
-      background-size: 100% 3px, 6px 100%;
-      pointer-events: none;
-      z-index: 2;
+      border: 8px solid #1a0f08;
+      box-shadow: inset 0 0 20px rgba(0,0,0,1);
+      display: flex;
+      align-items: center;
+      justify-content: center;
     }
 
     video {
       width: 100%;
       height: 100%;
-      object-fit: cover;
-      transition: filter 0.1s ease;
+      object-fit: contain;
+      background-color: #000;
     }
 
-    /* CONTROLES Y BOTONES */
-    .panel-controles {
+    .osd-logo {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      border: 2px solid #00ffff;
+      color: #00ffff;
+      padding: 5px 10px;
+      font-size: 14px;
+      font-weight: bold;
+      border-radius: 8px;
+      box-shadow: 0 0 10px #00ffff;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 10;
+      pointer-events: none;
+    }
+
+    .controls-panel {
+      width: 100%;
       margin-top: 15px;
       display: grid;
       grid-template-columns: repeat(4, 1fr);
-      gap: 8px;
+      gap: 10px;
     }
 
-    .btn-control {
-      background: #222;
+    .btn {
+      background: #2a2a2a;
       color: #fff;
-      border: 2px solid #444;
-      padding: 10px 5px;
+      border: 2px solid #111;
       border-radius: 8px;
-      font-size: 0.8rem;
+      padding: 12px 5px;
+      font-size: 11px;
+      font-weight: bold;
       cursor: pointer;
       display: flex;
       align-items: center;
       justify-content: center;
       gap: 5px;
+      box-shadow: 0 4px 0 #111;
     }
 
-    .btn-control:active {
-      transform: scale(0.95);
-      background: #444;
+    .btn:active {
+      transform: translateY(4px);
+      box-shadow: none;
     }
 
-    .btn-guia   { background: #b8860b; border-color: #d4af37; }
-    .btn-anadir { background: #006400; border-color: #2e8b57; }
-    .btn-full   { background: #00008b; border-color: #4169e1; }
-    .btn-power  { background: #8b0000; border-color: #dc143c; }
+    .btn-guia { background: #b8860b; color: #fff; }
+    .btn-anadir { background: #006400; color: #fff; }
+    .btn-full { background: #00008b; color: #fff; }
+    .btn-power { background: #8b0000; color: #fff; }
 
-    /* CONTROLES EXTRAS (ESTILOS Y SINTONIZADOR) */
-    .extras-container {
-      margin-top: 15px;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      gap: 10px;
-      background: rgba(0,0,0,0.5);
-      padding: 10px;
-      border-radius: 10px;
-    }
-
-    .sintonizador-box, .estilo-box {
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      gap: 10px;
-      font-size: 0.85rem;
-    }
-
-    input[type="range"] {
-      flex: 1;
-      accent-color: #ff007f;
-    }
-
-    select {
-      background: #222;
-      color: #fff;
-      border: 1px solid #555;
-      padding: 5px;
-      border-radius: 5px;
+    input[type="file"] {
+      display: none;
     }
   </style>
 </head>
 <body>
 
-  <!-- MARCO DEL TELEVISOR -->
-  <div id="marco-tv" class="tv-container tv-madera">
-    
-    <!-- PANTALLA CRT -->
-    <div class="pantalla-wrapper">
-      <video id="reproductor" autoplay loop muted playsinline></video>
+  <div class="tv-frame">
+    <div class="screen-container">
+      <div class="osd-logo">retro tv 90s</div>
+      <video id="tvPlayer" autoplay loop muted playsinline></video>
     </div>
 
-    <!-- PANEL DE BOTONES -->
-    <div class="panel-controles">
-      <button class="btn-control" onclick="cambiarCanal(1)"><i class="fas fa-chevron-up"></i> CH +</button>
-      <button class="btn-control" onclick="cambiarCanal(-1)"><i class="fas fa-chevron-down"></i> CH -</button>
-      <button class="btn-control" onclick="ajustarVolumen(0.1)"><i class="fas fa-volume-up"></i> VOL +</button>
-      <button class="btn-control" onclick="ajustarVolumen(-0.1)"><i class="fas fa-volume-down"></i> VOL -</button>
+    <div class="controls-panel">
+      <button class="btn" onclick="nextChannel()"><i class="fas fa-chevron-up"></i> CH ▲</button>
+      <button class="btn" onclick="prevChannel()"><i class="fas fa-chevron-down"></i> CH ▼</button>
+      <button class="btn" onclick="volUp()"><i class="fas fa-volume-up"></i> VOL +</button>
+      <button class="btn" onclick="volDown()"><i class="fas fa-volume-down"></i> VOL -</button>
       
-      <button class="btn-control btn-guia" onclick="abrirGuia()"><i class="fas fa-list"></i> GUÍA</button>
-      <button class="btn-control btn-anadir" onclick="agregarCanal()"><i class="fas fa-folder-plus"></i> AÑADIR</button>
-      <button class="btn-control btn-full" onclick="pantallaCompleta()"><i class="fas fa-expand"></i> FULL</button>
-      <button class="btn-control btn-power" onclick="togglePower()"><i class="fas fa-power-off"></i> POWER</button>
+      <button class="btn btn-guia" onclick="showGuide()"><i class="fas fa-list"></i> GUÍA</button>
+      <button class="btn btn-anadir" onclick="document.getElementById('fileInput').click()"><i class="fas fa-folder-open"></i> AÑADIR</button>
+      <button class="btn btn-full" onclick="toggleFullScreen()"><i class="fas fa-expand"></i> FULL</button>
+      <button class="btn btn-power" onclick="togglePower()"><i class="fas fa-power-off"></i> POWER</button>
     </div>
-
-    <!-- EXTRAS: SINTONIZADOR Y MODELO DE TV -->
-    <div class="extras-container">
-      <div class="sintonizador-box">
-        <label for="sintonizador"><i class="fas fa-sliders-h"></i> Sintonizar:</label>
-        <input type="range" id="sintonizador" min="20" max="100" value="100" oninput="ajustarSintonia(this.value)">
-      </div>
-
-      <div class="estilo-box">
-        <label for="select-estilo"><i class="fas fa-tv"></i> Modelo TV:</label>
-        <select id="select-estilo" onchange="cambiarEstiloTV(this.value)">
-          <option value="tv-madera">1. Madera 80s</option>
-          <option value="tv-neon">2. Cyberpunk Neón</option>
-          <option value="tv-transparente">3. Plástico Purpura 90s</option>
-          <option value="tv-gris">4. Gris Clásica</option>
-          <option value="tv-rojo">5. Retro Pop Rojo</option>
-          <option value="tv-portatil">6. Mini Portátil</option>
-        </select>
-      </div>
-    </div>
-
   </div>
 
+  <!-- Input oculto para cargar carpetas o videos -->
+  <input type="file" id="fileInput" webkitdirectory directory multiple accept="video/*" onchange="handleFiles(this.files)">
+
   <script>
-    const reproductor = document.getElementById('reproductor');
-    const marcoTV = document.getElementById('marco-tv');
-    let listaCanales = [];
-    let canalActualIndex = 0;
+    const player = document.getElementById('tvPlayer');
+    let playlist = [];
+    let currentIndex = 0;
 
-    // --- ALMACENAMIENTO LOCAL (localStorage) ---
-    function guardarCanales() {
-      localStorage.setItem('retro_tv_canales', JSON.stringify(listaCanales));
+    // --- GUARDAR Y CARGAR CANALES (localStorage) ---
+    function savePlaylist() {
+      localStorage.setItem('retro_tv_saved_playlist', JSON.stringify(playlist));
     }
 
-    function cargarCanalesGuardados() {
-      const guardados = localStorage.getItem('retro_tv_canales');
-      if (guardados) {
-        listaCanales = JSON.parse(guardados);
+    function loadSavedPlaylist() {
+      const saved = localStorage.getItem('retro_tv_saved_playlist');
+      if (saved) {
+        playlist = JSON.parse(saved);
+        if (playlist.length > 0) {
+          playCurrent();
+        }
+      }
+    }
+
+    // --- MANEJO DE ARCHIVOS Y CARPETAS ---
+    function handleFiles(files) {
+      const newFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
+      if (newFiles.length === 0) {
+        alert("No se encontraron videos válidos en la carpeta seleccionada.");
+        return;
+      }
+
+      // Generar URLs para reproducción local
+      playlist = newFiles.map(file => URL.createObjectURL(file));
+      currentIndex = 0;
+      
+      // Guardar nombres o rutas referenciales en memoria
+      const fileNames = newFiles.map(file => file.name);
+      localStorage.setItem('retro_tv_file_names', JSON.stringify(fileNames));
+
+      playCurrent();
+      alert(`¡Se cargaron ${newFiles.length} videos de la carpeta!`);
+    }
+
+    function playCurrent() {
+      if (playlist.length === 0) return;
+      player.src = playlist[currentIndex];
+      player.play().catch(e => console.log("Autoplay bloquado por navegador:", e));
+    }
+
+    function nextChannel() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex + 1) % playlist.length;
+      playCurrent();
+    }
+
+    function prevChannel() {
+      if (playlist.length === 0) return;
+      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
+      playCurrent();
+    }
+
+    function volUp() {
+      player.muted = false;
+      player.volume = Math.min(1, player.volume + 0.1);
+    }
+
+    function volDown() {
+      player.muted = false;
+      player.volume = Math.max(0, player.volume - 0.1);
+    }
+
+    function toggleFullScreen() {
+      if (!document.fullscreenElement) {
+        player.requestFullscreen().catch(err => alert(err.message));
       } else {
-        // Canales por defecto si no hay guardados
-        listaCanales = [
-          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/BigBuckBunny.mp4',
-          'https://commondatastorage.googleapis.com/gtv-videos-bucket/sample/ElephantsDream.mp4'
-        ];
-        guardarCanales();
-      }
-      reproducirCanalActual();
-    }
-
-    // --- LÓGICA DE REPRODUCCIÓN ---
-    function reproducirCanalActual() {
-      if (listaCanales.length > 0) {
-        reproductor.src = listaCanales[canalActualIndex];
-        reproductor.play().catch(() => {});
-      }
-    }
-
-    function cambiarCanal(direccion) {
-      if (listaCanales.length === 0) return;
-      canalActualIndex = (canalActualIndex + direccion + listaCanales.length) % listaCanales.length;
-      reproducirCanalActual();
-    }
-
-    function agregarCanal() {
-      const url = prompt("Ingresa la URL del video o transmisión (.mp4 / .m3u8):");
-      if (url) {
-        listaCanales.push(url);
-        guardarCanales();
-        canalActualIndex = listaCanales.length - 1;
-        reproducirCanalActual();
-        alert("¡Canal guardado con éxito!");
-      }
-    }
-
-    function ajustarVolumen(cambio) {
-      reproductor.muted = false;
-      let nuevoVolumen = reproductor.volume + cambio;
-      if (nuevoVolumen > 1) nuevoVolumen = 1;
-      if (nuevoVolumen < 0) nuevoVolumen = 0;
-      reproductor.volume = nuevoVolumen;
-    }
-
-    // --- FUNCIONES EXTRAS (SINTONIZADOR Y ESTILOS) ---
-    function ajustarSintonia(valor) {
-      const opacidad = valor / 100;
-      const desfoque = (100 - valor) / 10;
-      reproductor.style.filter = `blur(${desfoque}px) opacity(${opacidad})`;
-    }
-
-    function cambiarEstiloTV(estilo) {
-      marcoTV.className = 'tv-container ' + estilo;
-      localStorage.setItem('retro_tv_estilo', estilo);
-    }
-
-    function pantallaCompleta() {
-      if (reproductor.requestFullscreen) {
-        reproductor.requestFullscreen();
-      } else if (reproductor.webkitRequestFullscreen) {
-        reproductor.webkitRequestFullscreen();
+        document.exitFullscreen();
       }
     }
 
     function togglePower() {
-      if (reproductor.style.display === 'none') {
-        reproductor.style.display = 'block';
-        reproductor.play();
+      if (player.style.display === 'none') {
+        player.style.display = 'block';
+        player.play();
       } else {
-        reproductor.style.display = 'none';
-        reproductor.pause();
+        player.style.display = 'none';
+        player.pause();
       }
     }
 
-    // --- INICIALIZACIÓN ---
-    document.addEventListener('DOMContentLoaded', () => {
-      cargarCanalesGuardados();
-
-      // Restaurar estilo preferido si existe
-      const estiloGuardado = localStorage.getItem('retro_tv_estilo');
-      if (estiloGuardado) {
-        marcoTV.className = 'tv-container ' + estiloGuardado;
-        document.getElementById('select-estilo').value = estiloGuardado;
+    function showGuide() {
+      const savedNames = localStorage.getItem('retro_tv_file_names');
+      if (savedNames) {
+        const names = JSON.parse(savedNames);
+        alert("Lista de Canales / Archivos cargados:\n\n" + names.join("\n"));
+      } else {
+        alert("Aún no has añadido ninguna carpeta de canales.");
       }
+    }
+
+    // Inicializar al abrir la app
+    document.addEventListener('DOMContentLoaded', () => {
+      loadSavedPlaylist();
     });
   </script>
 </body>
