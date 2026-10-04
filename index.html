@@ -1,245 +1,401 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-  <title>Retro TV 90s</title>
-  <link rel="manifest" href="manifest.json">
-  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-  <style>
-    * {
-      box-sizing: border-box;
-      margin: 0;
-      padding: 0;
-      user-select: none;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Retro TV 90s</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --tv-body: #2d1c13;
+            --tv-bevel: #1a0f0a;
+            --panel-bg: #140b07;
+            --screen-bg: #000000;
+            --osd-green: #33ff33;
+            --pluto-yellow: #ffea00;
+            --epg-bg: rgba(15, 15, 20, 0.92);
+        }
 
-    body {
-      background-color: #000;
-      color: #fff;
-      font-family: 'Courier New', Courier, monospace;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      min-height: 100vh;
-      overflow: hidden;
-    }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Courier New', monospace; user-select: none; }
+        body { background-color: #050505; color: #fff; min-height: 100vh; display: flex; justify-content: center; align-items: center; padding: 8px; overflow: hidden; }
 
-    .tv-frame {
-      background: #3d2314;
-      border: 12px solid #26140a;
-      border-radius: 25px;
-      padding: 20px;
-      box-shadow: 0 0 30px rgba(0,0,0,0.8);
-      width: 95vw;
-      max-width: 650px;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-    }
+        .tv-cabinet {
+            background: linear-gradient(145deg, var(--tv-body), var(--tv-bevel));
+            border-radius: 16px;
+            padding: 12px;
+            box-shadow: 0 15px 35px rgba(0,0,0,0.9);
+            border: 4px solid #110905;
+            width: 100%;
+            max-width: 1200px;
+            height: 92vh;
+            display: flex;
+            flex-direction: row;
+            gap: 10px;
+            position: relative;
+        }
 
-    .screen-container {
-      position: relative;
-      width: 100%;
-      height: 60vh;
-      max-height: 400px;
-      background-color: #050505;
-      border-radius: 30px;
-      overflow: hidden;
-      border: 8px solid #1a0f08;
-      box-shadow: inset 0 0 20px rgba(0,0,0,1);
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
+        /* PANTALLA PRINCIPAL (90%) */
+        .screen-bezel {
+            flex: 0 0 90%;
+            width: 90%;
+            height: 100%;
+            background: #111;
+            border-radius: 14px;
+            padding: 8px;
+            border: 5px solid #0a0503;
+            box-shadow: inset 0 0 15px rgba(0,0,0,0.9);
+            position: relative;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
 
-    video {
-      width: 100%;
-      height: 100%;
-      object-fit: contain;
-      background-color: #000;
-    }
+        .screen-container {
+            width: 100%;
+            height: 100%;
+            background-color: var(--screen-bg);
+            border-radius: 8px;
+            overflow: hidden;
+            position: relative;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
 
-    .osd-logo {
-      position: absolute;
-      top: 20px;
-      left: 20px;
-      border: 2px solid #00ffff;
-      color: #00ffff;
-      padding: 5px 10px;
-      font-size: 14px;
-      font-weight: bold;
-      border-radius: 8px;
-      box-shadow: 0 0 10px #00ffff;
-      background: rgba(0, 0, 0, 0.5);
-      z-index: 10;
-      pointer-events: none;
-    }
+        video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
 
-    .controls-panel {
-      width: 100%;
-      margin-top: 15px;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 10px;
-    }
+        /* LOGO RETRO TV 90S NEÓN (ESTILO DE TU IMAGEN) */
+        .retro-logo-watermark {
+            position: absolute;
+            top: 15px;
+            left: 20px;
+            z-index: 22;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 4px 8px;
+            border: 2px solid #00f0ff;
+            border-radius: 6px;
+            background: rgba(0, 0, 0, 0.4);
+            box-shadow: 0 0 8px #00f0ff, inset 0 0 6px #ff007f;
+            pointer-events: none;
+            opacity: 0.85;
+            transform: scale(0.85);
+            transform-origin: top left;
+        }
 
-    .btn {
-      background: #2a2a2a;
-      color: #fff;
-      border: 2px solid #111;
-      border-radius: 8px;
-      padding: 12px 5px;
-      font-size: 11px;
-      font-weight: bold;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 5px;
-      box-shadow: 0 4px 0 #111;
-    }
+        .logo-text-top {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 13px;
+            color: #ff007f;
+            text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f;
+            line-height: 1;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
 
-    .btn:active {
-      transform: translateY(4px);
-      box-shadow: none;
-    }
+        .logo-text-bottom {
+            font-family: 'Arial Black', sans-serif;
+            font-size: 14px;
+            color: #00f0ff;
+            text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
+            line-height: 1;
+            letter-spacing: 1px;
+            text-transform: lowercase;
+        }
 
-    .btn-guia { background: #b8860b; color: #fff; }
-    .btn-anadir { background: #006400; color: #fff; }
-    .btn-full { background: #00008b; color: #fff; }
-    .btn-power { background: #8b0000; color: #fff; }
+        /* GUÍA EPG Y OSD */
+        .channel-osd {
+            position: absolute; top: 15px; right: 20px;
+            color: var(--osd-green); font-size: 20px; font-weight: bold;
+            text-shadow: 0 0 8px var(--osd-green); z-index: 20;
+            pointer-events: none; opacity: 0; transition: opacity 0.2s;
+        }
+        .channel-osd.show { opacity: 1; }
 
-    input[type="file"] {
-      display: none;
-    }
-  </style>
+        .epg-overlay {
+            position: absolute; bottom: 0; left: 0; width: 100%;
+            background: var(--epg-bg); border-top: 2px solid var(--pluto-yellow);
+            padding: 12px; z-index: 25; display: none; flex-direction: column; gap: 6px;
+            backdrop-filter: blur(4px);
+        }
+        .epg-overlay.active { display: flex; }
+        .epg-header { display: flex; justify-content: space-between; color: var(--pluto-yellow); font-size: 12px; font-weight: bold; }
+        .epg-title { font-size: 14px; color: #fff; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+        .epg-progress-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
+        .epg-progress-fill { height: 100%; background: var(--pluto-yellow); width: 0%; }
+
+        .smpte-bars, .static-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
+        .smpte-bars { background: linear-gradient(90deg, #c0c0c0 0% 14.28%, #c0c000 14.28% 28.56%, #00c0c0 28.56% 42.84%, #00c000 42.84% 57.12%, #c000c0 57.12% 71.4%, #c00000 71.4% 85.68%, #0000c0 85.68% 100%); opacity: 0; z-index: 14; }
+        .static-overlay { background: repeating-radial-gradient(circle at 50% 50%, #fff, #000 2px); opacity: 0; z-index: 15; }
+        .static-overlay.active { opacity: 0.8; animation: staticFlicker 0.05s infinite; }
+        .smpte-bars.active { opacity: 0.9; }
+
+        @keyframes staticFlicker { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(0.99); } }
+
+        /* CONTROLES LATERALES (10%) */
+        .controls-panel {
+            flex: 0 0 10%; width: 10%; min-width: 85px; height: 100%;
+            background: var(--panel-bg); border-radius: 10px; padding: 6px 4px;
+            border: 2px solid #23130b; display: flex; flex-direction: column; justify-content: space-between;
+        }
+
+        .btn-grid { width: 100%; display: flex; flex-direction: column; gap: 5px; }
+
+        .tv-btn {
+            background: linear-gradient(180deg, #383838, #1c1c1c);
+            border: 1px solid #444; color: #eee; padding: 6px 2px;
+            border-radius: 4px; font-weight: bold; font-size: 8px;
+            cursor: pointer; display: flex; flex-direction: column; align-items: center;
+            justify-content: center; gap: 2px; box-shadow: 0 2px 3px rgba(0,0,0,0.6);
+            width: 100%; text-align: center;
+        }
+
+        .tv-btn:active { transform: translateY(1px); }
+        .tv-btn.load-btn { background: linear-gradient(180deg, #228b22, #114b11); border-color: #2e8b57; color: #fff; }
+        .tv-btn.epg-btn { background: linear-gradient(180deg, #d4a017, #7a5c0d); border-color: #ffd700; color: #fff; }
+        .tv-btn.fullscreen-btn { background: linear-gradient(180deg, #2252a3, #0e275e); border-color: #356bc2; }
+        .tv-btn.power-btn { background: linear-gradient(180deg, #a32222, #5e0e0e); border-color: #c22; color: #fff; }
+
+        input[type="file"] { display: none; }
+
+        @media (max-width: 600px) {
+            .tv-cabinet { flex-direction: column; height: auto; }
+            .screen-bezel { flex: 1; width: 100%; height: 60vh; }
+            .controls-panel { flex: 0 0 auto; width: 100%; min-width: unset; height: auto; }
+            .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+            .tv-btn { padding: 8px 2px; font-size: 7px; flex-direction: row; }
+        }
+    </style>
 </head>
 <body>
 
-  <div class="tv-frame">
-    <div class="screen-container">
-      <div class="osd-logo">retro tv 90s</div>
-      <video id="tvPlayer" autoplay loop muted playsinline></video>
+<div class="tv-cabinet" id="tvCabinet">
+    <div class="screen-bezel">
+        <div class="screen-container">
+            <div class="retro-logo-watermark">
+                <span class="logo-text-top">retro</span>
+                <span class="logo-text-bottom">tv 90</span>
+            </div>
+
+            <div class="channel-osd" id="channelOSD">CH 02</div>
+
+            <div class="epg-overlay" id="epgOverlay">
+                <div class="epg-header">
+                    <span id="epgChannel">CANAL 02</span>
+                    <span id="epgTime">EN VIVO</span>
+                </div>
+                <div class="epg-title" id="epgTitle">Sin Programación</div>
+                <div class="epg-progress-bar">
+                    <div class="epg-progress-fill" id="epgProgress"></div>
+                </div>
+            </div>
+
+            <div class="smpte-bars" id="smpteBars"></div>
+            <div class="static-overlay" id="staticOverlay"></div>
+            <video id="tvVideo" playsinline></video>
+        </div>
     </div>
 
     <div class="controls-panel">
-      <button class="btn" onclick="nextChannel()"><i class="fas fa-chevron-up"></i> CH ▲</button>
-      <button class="btn" onclick="prevChannel()"><i class="fas fa-chevron-down"></i> CH ▼</button>
-      <button class="btn" onclick="volUp()"><i class="fas fa-volume-up"></i> VOL +</button>
-      <button class="btn" onclick="volDown()"><i class="fas fa-volume-down"></i> VOL -</button>
-      
-      <button class="btn btn-guia" onclick="showGuide()"><i class="fas fa-list"></i> GUÍA</button>
-      <button class="btn btn-anadir" onclick="document.getElementById('fileInput').click()"><i class="fas fa-folder-open"></i> AÑADIR</button>
-      <button class="btn btn-full" onclick="toggleFullScreen()"><i class="fas fa-expand"></i> FULL</button>
-      <button class="btn btn-power" onclick="togglePower()"><i class="fas fa-power-off"></i> POWER</button>
+        <div class="btn-grid">
+            <button class="tv-btn" id="btnChUp"><i class="fas fa-chevron-up"></i> CH ▲</button>
+            <button class="tv-btn" id="btnChDown"><i class="fas fa-chevron-down"></i> CH ▼</button>
+            <button class="tv-btn" id="btnVolUp"><i class="fas fa-volume-high"></i> VOL +</button>
+            <button class="tv-btn" id="btnVolDown"><i class="fas fa-volume-low"></i> VOL -</button>
+            <button class="tv-btn epg-btn" id="btnEPG"><i class="fas fa-list"></i> GUÍA</button>
+            
+            <label class="tv-btn load-btn">
+                <i class="fas fa-folder-open"></i> AÑADIR
+                <input type="file" id="fileInput" accept="video/*" multiple webkitdirectory directory>
+            </label>
+            
+            <button class="tv-btn fullscreen-btn" id="btnFullscreen"><i class="fas fa-expand"></i> FULL</button>
+            <button class="tv-btn power-btn" id="btnPower"><i class="fas fa-power-off"></i> POWER</button>
+        </div>
     </div>
-  </div>
+</div>
 
-  <!-- Input oculto para cargar carpetas o videos -->
-  <input type="file" id="fileInput" webkitdirectory directory multiple accept="video/*" onchange="handleFiles(this.files)">
+<script>
+    const MIN_CHANNEL = 2; const MAX_CHANNEL = 40;
+    let currentChannel = 2; let channelsData = {}; let isPowerOn = true;
+    let audioCtx = null; let gainNode = null; let sourceNode = null; let currentVolumeLevel = 0.8;
 
-  <script>
-    const player = document.getElementById('tvPlayer');
-    let playlist = [];
-    let currentIndex = 0;
+    const video = document.getElementById('tvVideo');
+    const osd = document.getElementById('channelOSD');
+    const staticOverlay = document.getElementById('staticOverlay');
+    const smpteBars = document.getElementById('smpteBars');
+    const epgOverlay = document.getElementById('epgOverlay');
 
-    // --- GUARDAR Y CARGAR CANALES (localStorage) ---
-    function savePlaylist() {
-      localStorage.setItem('retro_tv_saved_playlist', JSON.stringify(playlist));
+    // PERSISTENCIA DE RUTAS Y METADATOS VÍA LOCALSTORAGE (CERO ESPACIO)
+    function saveChannelMeta(ch, fileList) {
+        const metaList = fileList.map(f => ({ name: f.file.name, duration: f.duration }));
+        localStorage.setItem(`retro_tv_ch_${ch}`, JSON.stringify(metaList));
     }
 
-    function loadSavedPlaylist() {
-      const saved = localStorage.getItem('retro_tv_saved_playlist');
-      if (saved) {
-        playlist = JSON.parse(saved);
-        if (playlist.length > 0) {
-          playCurrent();
+    function initAudioContext() {
+        if (!audioCtx) {
+            const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+            audioCtx = new AudioContextClass();
+            gainNode = audioCtx.createGain();
+            sourceNode = audioCtx.createMediaElementSource(video);
+            sourceNode.connect(gainNode);
+            gainNode.connect(audioCtx.destination);
+            gainNode.gain.value = currentVolumeLevel;
         }
-      }
+        if (audioCtx.state === 'suspended') audioCtx.resume();
     }
 
-    // --- MANEJO DE ARCHIVOS Y CARPETAS ---
-    function handleFiles(files) {
-      const newFiles = Array.from(files).filter(file => file.type.startsWith('video/'));
-      if (newFiles.length === 0) {
-        alert("No se encontraron videos válidos en la carpeta seleccionada.");
-        return;
-      }
-
-      // Generar URLs para reproducción local
-      playlist = newFiles.map(file => URL.createObjectURL(file));
-      currentIndex = 0;
-      
-      // Guardar nombres o rutas referenciales en memoria
-      const fileNames = newFiles.map(file => file.name);
-      localStorage.setItem('retro_tv_file_names', JSON.stringify(fileNames));
-
-      playCurrent();
-      alert(`¡Se cargaron ${newFiles.length} videos de la carpeta!`);
+    function playBeepAndStatic() {
+        try {
+            initAudioContext();
+            const bufferSize = audioCtx.sampleRate * 0.12;
+            const buffer = audioCtx.createBuffer(1, bufferSize, audioCtx.sampleRate);
+            const data = buffer.getChannelData(0);
+            for (let i = 0; i < bufferSize; i++) data[i] = Math.random() * 2 - 1;
+            const noise = audioCtx.createBufferSource();
+            noise.buffer = buffer;
+            const noiseGain = audioCtx.createGain();
+            noiseGain.gain.value = 0.04;
+            noise.connect(noiseGain);
+            noiseGain.connect(audioCtx.destination);
+            noise.start();
+        } catch(e) {}
     }
 
-    function playCurrent() {
-      if (playlist.length === 0) return;
-      player.src = playlist[currentIndex];
-      player.play().catch(e => console.log("Autoplay bloquado por navegador:", e));
+    function getVideoDuration(file) {
+        return new Promise((resolve) => {
+            const tempVid = document.createElement('video');
+            tempVid.preload = 'metadata';
+            tempVid.src = URL.createObjectURL(file);
+            tempVid.onloadedmetadata = () => { URL.revokeObjectURL(tempVid.src); resolve(tempVid.duration || 0); };
+            tempVid.onerror = () => resolve(0);
+        });
     }
 
-    function nextChannel() {
-      if (playlist.length === 0) return;
-      currentIndex = (currentIndex + 1) % playlist.length;
-      playCurrent();
+    function getLivePlaybackState(chNum) {
+        const playlist = channelsData[chNum];
+        if (!playlist || playlist.length === 0) return null;
+        let totalDuration = 0;
+        for (let item of playlist) totalDuration += item.duration;
+        if (totalDuration === 0) return null;
+
+        const nowInSeconds = Date.now() / 1000;
+        let currentCycleTime = nowInSeconds % totalDuration;
+        let accumulated = 0;
+
+        for (let i = 0; i < playlist.length; i++) {
+            const item = playlist[i];
+            if (currentCycleTime < accumulated + item.duration) {
+                return { videoItem: item, seekTime: currentCycleTime - accumulated, duration: item.duration };
+            }
+            accumulated += item.duration;
+        }
+        return { videoItem: playlist[0], seekTime: 0, duration: playlist[0].duration };
     }
 
-    function prevChannel() {
-      if (playlist.length === 0) return;
-      currentIndex = (currentIndex - 1 + playlist.length) % playlist.length;
-      playCurrent();
+    function renderCurrentChannel() {
+        if (!isPowerOn) return;
+        const liveState = getLivePlaybackState(currentChannel);
+
+        smpteBars.classList.add('active');
+        playBeepAndStatic();
+        showOSD(`CH ${String(currentChannel).padStart(2, '0')}`);
+
+        setTimeout(() => {
+            smpteBars.classList.remove('active');
+            staticOverlay.classList.add('active');
+
+            if (!liveState || !liveState.videoItem.file) {
+                video.removeAttribute('src'); video.load(); updateEPG(null);
+                setTimeout(() => staticOverlay.classList.remove('active'), 150);
+                return;
+            }
+
+            video.src = URL.createObjectURL(liveState.videoItem.file);
+            video.onloadedmetadata = () => {
+                video.currentTime = liveState.seekTime;
+                initAudioContext();
+                video.play().catch(() => {});
+            };
+
+            updateEPG(liveState);
+            setTimeout(() => staticOverlay.classList.remove('active'), 150);
+        }, 150);
     }
 
-    function volUp() {
-      player.muted = false;
-      player.volume = Math.min(1, player.volume + 0.1);
+    function showOSD(text) {
+        osd.textContent = text; osd.classList.add('show');
+        clearTimeout(osd._timer);
+        osd._timer = setTimeout(() => osd.classList.remove('show'), 2000);
     }
 
-    function volDown() {
-      player.muted = false;
-      player.volume = Math.max(0, player.volume - 0.1);
+    function updateEPG(liveState) {
+        if (!liveState) {
+            document.getElementById('epgTitle').textContent = "Sin Programación";
+            document.getElementById('epgProgress').style.width = "0%";
+            return;
+        }
+        document.getElementById('epgChannel').textContent = `CANAL ${String(currentChannel).padStart(2, '0')}`;
+        document.getElementById('epgTitle').textContent = liveState.videoItem.file.name.replace(/\.[^/.]+$/, "");
+        document.getElementById('epgProgress').style.width = `${(liveState.seekTime / liveState.duration) * 100}%`;
     }
 
-    function toggleFullScreen() {
-      if (!document.fullscreenElement) {
-        player.requestFullscreen().catch(err => alert(err.message));
-      } else {
-        document.exitFullscreen();
-      }
+    function adjustGainVolume(delta) {
+        initAudioContext();
+        currentVolumeLevel = Math.max(0, Math.min(1, currentVolumeLevel + delta));
+        if (gainNode) gainNode.gain.setValueAtTime(currentVolumeLevel, audioCtx.currentTime);
+        showOSD(`VOL ${Math.round(currentVolumeLevel * 100)}%`);
     }
 
-    function togglePower() {
-      if (player.style.display === 'none') {
-        player.style.display = 'block';
-        player.play();
-      } else {
-        player.style.display = 'none';
-        player.pause();
-      }
-    }
+    window.addEventListener('DOMContentLoaded', () => {
+        document.getElementById('fileInput').addEventListener('change', async (e) => {
+            const files = Array.from(e.target.files).filter(f => f.type.startsWith('video/'));
+            if (files.length === 0) return;
+            showOSD('PROCESANDO...');
+            const playlist = [];
+            for (let file of files) {
+                const duration = await getVideoDuration(file);
+                playlist.push({ file: file, duration: duration });
+            }
+            channelsData[currentChannel] = playlist;
+            saveChannelMeta(currentChannel, playlist);
+            renderCurrentChannel();
+        });
 
-    function showGuide() {
-      const savedNames = localStorage.getItem('retro_tv_file_names');
-      if (savedNames) {
-        const names = JSON.parse(savedNames);
-        alert("Lista de Canales / Archivos cargados:\n\n" + names.join("\n"));
-      } else {
-        alert("Aún no has añadido ninguna carpeta de canales.");
-      }
-    }
+        document.getElementById('btnChUp').addEventListener('click', () => {
+            currentChannel = (currentChannel >= MAX_CHANNEL) ? MIN_CHANNEL : currentChannel + 1;
+            renderCurrentChannel();
+        });
+        document.getElementById('btnChDown').addEventListener('click', () => {
+            currentChannel = (currentChannel <= MIN_CHANNEL) ? MIN_CHANNEL : currentChannel - 1;
+            renderCurrentChannel();
+        });
+        document.getElementById('btnEPG').addEventListener('click', () => epgOverlay.classList.toggle('active'));
+        document.getElementById('btnVolUp').addEventListener('click', () => adjustGainVolume(0.1));
+        document.getElementById('btnVolDown').addEventListener('click', () => adjustGainVolume(-0.1));
 
-    // Inicializar al abrir la app
-    document.addEventListener('DOMContentLoaded', () => {
-      loadSavedPlaylist();
+        document.getElementById('btnPower').addEventListener('click', () => {
+            isPowerOn = !isPowerOn;
+            if (!isPowerOn) { video.pause(); video.style.display = 'none'; epgOverlay.classList.remove('active'); showOSD('POWER OFF'); }
+            else { video.style.display = 'block'; renderCurrentChannel(); }
+        });
+
+        document.getElementById('btnFullscreen').addEventListener('click', () => {
+            const cabinet = document.getElementById('tvCabinet');
+            if (!document.fullscreenElement) cabinet.requestFullscreen();
+            else document.exitFullscreen();
+        });
+
+        video.addEventListener('timeupdate', () => {
+            const liveState = getLivePlaybackState(currentChannel);
+            if (liveState) updateEPG(liveState);
+        });
+        video.addEventListener('ended', () => renderCurrentChannel());
+
+        renderCurrentChannel();
     });
-  </script>
+</script>
 </body>
 </html>
