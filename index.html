@@ -36,7 +36,6 @@
             position: relative;
         }
 
-        /* PANTALLA PRINCIPAL (90%) */
         .screen-bezel {
             flex: 0 0 90%;
             width: 90%;
@@ -89,7 +88,6 @@
             100% { opacity: 0.85; }
         }
 
-        /* LINEA DE TIEMPO (TIMELINE) */
         .timeline-container {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
@@ -135,7 +133,6 @@
         #youtubeContainer { width: 100%; height: 100%; display: none; background: #000; }
         #youtubeContainer iframe { width: 100%; height: 100%; border: none; }
 
-        /* LOGO RETRO TV 90S NEÓN */
         .retro-logo-watermark {
             position: absolute; top: 15px; left: 20px; z-index: 30;
             display: flex; flex-direction: column; align-items: center; justify-content: center;
@@ -146,7 +143,6 @@
         .logo-text-top { font-family: 'Arial Black', sans-serif; font-size: 13px; color: #ff007f; text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f; line-height: 1; letter-spacing: 1px; text-transform: lowercase; }
         .logo-text-bottom { font-family: 'Arial Black', sans-serif; font-size: 14px; color: #00f0ff; text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff; line-height: 1; letter-spacing: 1px; text-transform: lowercase; }
 
-        /* GUÍA EPG Y OSD */
         .channel-osd {
             position: absolute; top: 15px; right: 20px; color: var(--osd-green);
             font-size: 20px; font-weight: bold; text-shadow: 0 0 8px var(--osd-green);
@@ -174,7 +170,6 @@
 
         @keyframes staticFlicker { 0% { transform: scale(1); } 50% { transform: scale(1.01); } 100% { transform: scale(0.99); } }
 
-        /* CONTROLES LATERALES (10%) */
         .controls-panel {
             flex: 0 0 10%; width: 10%; min-width: 85px; height: 100%;
             background: var(--panel-bg); border-radius: 10px; padding: 6px 4px;
@@ -204,72 +199,23 @@
 
         input[type="file"] { display: none; }
 
-        /* BUSCADOR DE YOUTUBE (OVERLAY) */
         .yt-search-overlay {
-            position: absolute;
-            top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0, 0, 0, 0.9);
-            z-index: 40;
-            display: none;
-            flex-direction: column;
-            padding: 20px;
-            backdrop-filter: blur(5px);
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0, 0, 0, 0.9); z-index: 40; display: none;
+            flex-direction: column; padding: 20px; backdrop-filter: blur(5px);
         }
         .yt-search-overlay.active { display: flex; }
-        .yt-search-header {
-            display: flex;
-            gap: 10px;
-            margin-bottom: 15px;
-        }
-        .yt-search-input {
-            flex: 1;
-            padding: 10px;
-            border-radius: 4px;
-            border: 1px solid #333;
-            background: #111;
-            color: #fff;
-            font-family: 'Courier New', monospace;
-        }
-        .yt-search-btn {
-            padding: 10px 15px;
-            background: #cc0000;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
-        .yt-results-list {
-            flex: 1;
-            overflow-y: auto;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        .yt-result-item {
-            display: flex;
-            gap: 10px;
-            background: #1a1a1a;
-            padding: 10px;
-            border-radius: 4px;
-            cursor: pointer;
-            transition: background 0.2s;
-        }
+        .yt-search-header { display: flex; gap: 10px; margin-bottom: 15px; }
+        .yt-search-input { flex: 1; padding: 10px; border-radius: 4px; border: 1px solid #333; background: #111; color: #fff; font-family: 'Courier New', monospace; }
+        .yt-search-btn { padding: 10px 15px; background: #cc0000; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
+        .yt-results-list { flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+        .yt-result-item { display: flex; gap: 10px; background: #1a1a1a; padding: 10px; border-radius: 4px; cursor: pointer; transition: background 0.2s; }
         .yt-result-item:hover { background: #333; }
         .yt-result-thumb { width: 120px; height: 68px; object-fit: cover; border-radius: 4px; }
         .yt-result-info { flex: 1; display: flex; flex-direction: column; justify-content: center; }
         .yt-result-title { font-size: 12px; font-weight: bold; color: #fff; margin-bottom: 4px; }
         .yt-result-channel { font-size: 10px; color: #aaa; }
-        .yt-close-btn {
-            margin-top: 15px;
-            padding: 10px;
-            background: #444;
-            color: white;
-            border: none;
-            border-radius: 4px;
-            cursor: pointer;
-            font-weight: bold;
-        }
+        .yt-close-btn { margin-top: 15px; padding: 10px; background: #444; color: white; border: none; border-radius: 4px; cursor: pointer; font-weight: bold; }
 
         @media (max-width: 600px) {
             .tv-cabinet { flex-direction: column; height: auto; }
@@ -306,9 +252,8 @@
             <div class="smpte-bars" id="smpteBars"></div>
             <div class="static-overlay" id="staticOverlay"></div>
             
-            <!-- Reproductor de Video (Local y HLS) -->
-            <video id="tvVideo" playsinline></video>
-            <!-- Reproductor de YouTube -->
+            <!-- ATRIBUTO CROSSORIGIN AÑADIDO AQUÍ PARA EVITAR BLOQUEOS DE VIDEO EN CELULAR -->
+            <video id="tvVideo" playsinline crossorigin="anonymous"></video>
             <div id="youtubeContainer"></div>
 
             <div class="crt-overlay"></div>
@@ -321,15 +266,12 @@
                 <span class="time-text" id="totalTimeText">00:00</span>
             </div>
             
-            <!-- Buscador de YouTube (Superpuesto) -->
             <div class="yt-search-overlay" id="ytSearchOverlay">
                 <div class="yt-search-header">
                     <input type="text" id="ytSearchInput" class="yt-search-input" placeholder="Buscar en YouTube...">
                     <button id="ytSearchBtn" class="yt-search-btn">BUSCAR</button>
                 </div>
-                <div class="yt-results-list" id="ytResultsList">
-                    <!-- Resultados se cargarán aquí -->
-                </div>
+                <div class="yt-results-list" id="ytResultsList"></div>
                 <button class="yt-close-btn" id="ytCloseBtn">CERRAR</button>
             </div>
             
@@ -349,7 +291,6 @@
                 <input type="file" id="fileInput" accept="video/*" multiple webkitdirectory directory>
             </label>
 
-            <!-- NUEVOS BOTONES -->
             <button class="tv-btn hls-btn" id="btnHLS"><i class="fas fa-tv"></i> ANIME 24/7</button>
             <button class="tv-btn yt-btn" id="btnYouTubeSearch"><i class="fab fa-youtube"></i> BUSCAR YT</button>
             
@@ -366,10 +307,9 @@
     let currentChannel = 2; 
     let channelsData = {}; 
     let youtubeChannels = JSON.parse(localStorage.getItem('retro_tv_yt_channels')) || {}; 
-    // Datos para canales HLS (Lineales)
     let hlsChannels = JSON.parse(localStorage.getItem('retro_tv_hls_channels')) || {}; 
     let isPowerOn = true;
-    let hlsInstance = null; // Instancia de Hls.js
+    let hlsInstance = null; 
     
     let audioCtx = null; let gainNode = null; let sourceNode = null; let currentVolumeLevel = 0.8;
 
@@ -389,7 +329,6 @@
     const ytSearchInput = document.getElementById('ytSearchInput');
     const ytResultsList = document.getElementById('ytResultsList');
 
-    // Enlaces de ejemplo para canales lineales (HLS)
     const HLS_STREAMS = {
         naruto: 'https://d21vn5eki5qsdi.cloudfront.net/playlist.m3u8',
         yugioh: 'https://jmp2.uk/stvp-ATBC3900002PV'
@@ -495,7 +434,7 @@
             smpteBars.classList.remove('active');
             staticOverlay.classList.add('active');
 
-            // 1. VERIFICAR SI ES UN CANAL DE YOUTUBE
+            // 1. YOUTUBE
             if (youtubeChannels[currentChannel] && youtubeChannels[currentChannel].length > 0) {
                 destroyHls();
                 video.style.display = 'none';
@@ -517,24 +456,50 @@
                 return;
             }
 
-            // 2. VERIFICAR SI ES UN CANAL HLS (Lineal)
+            // 2. HLS (IPTV)
             if (hlsChannels[currentChannel] && hlsChannels[currentChannel].url) {
                 ytContainer.style.display = 'none';
                 ytContainer.innerHTML = '';
                 video.style.display = 'block';
-                timelineContainer.style.display = 'none'; // Ocultar timeline, es un directo
+                timelineContainer.style.display = 'none';
                 
                 const hlsUrl = hlsChannels[currentChannel].url;
                 const hlsName = hlsChannels[currentChannel].name || 'Canal Lineal';
 
                 if (Hls.isSupported()) {
                     destroyHls();
-                    hlsInstance = new Hls();
+                    // Configuración extra para evitar bloqueos de CORS
+                    hlsInstance = new Hls({
+                        xhrSetup: function(xhr, url) {
+                            xhr.withCredentials = false; 
+                        }
+                    });
                     hlsInstance.loadSource(hlsUrl);
                     hlsInstance.attachMedia(video);
                     hlsInstance.on(Hls.Events.MANIFEST_PARSED, function() {
                         video.play().catch(() => {});
                     });
+
+                    // NUEVO: Capturar errores para que no se quede en negro
+                    hlsInstance.on(Hls.Events.ERROR, function (event, data) {
+                        if (data.fatal) {
+                            switch (data.type) {
+                                case Hls.ErrorTypes.NETWORK_ERROR:
+                                    showOSD("ERROR DE RED");
+                                    alert("No se pudo conectar al canal. Es posible que el enlace esté caído o tu Proxy no esté funcionando. Revisa que hayas puesto la URL de Cloudflare.");
+                                    destroyHls();
+                                    break;
+                                case Hls.ErrorTypes.MEDIA_ERROR:
+                                    showOSD("ERROR DE VIDEO");
+                                    hlsInstance.recoverMediaError();
+                                    break;
+                                default:
+                                    destroyHls();
+                                    break;
+                            }
+                        }
+                    });
+
                 } else if (video.canPlayType('application/vnd.apple.mpegurl')) {
                     video.src = hlsUrl;
                     video.play().catch(() => {});
@@ -545,7 +510,7 @@
                 return;
             }
 
-            // 3. SI NO ES NINGUNO DE LOS ANTERIORES, ES UN CANAL LOCAL
+            // 3. LOCALES
             destroyHls();
             ytContainer.style.display = 'none';
             ytContainer.innerHTML = ''; 
@@ -619,7 +584,6 @@
 
     window.addEventListener('DOMContentLoaded', () => {
         
-        // CARGAR ARCHIVOS LOCALES
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const files = Array.from(e.target.files).filter(f => f.type.startsWith('video/'));
             if (files.length === 0) return;
@@ -640,9 +604,8 @@
             renderCurrentChannel();
         });
 
-        // AÑADIR CANAL HLS (Lineal)
         document.getElementById('btnHLS').addEventListener('click', () => {
-            const opcion = prompt("Elige un canal lineal:\n1. Naruto 24/7\n2. Yu-Gi-Oh! 24/7\n\nO pega un enlace .m3u8 personalizado:");
+            const opcion = prompt("Elige un canal lineal:\n1. Naruto 24/7\n2. Yu-Gi-Oh! 24/7\n\nO pega tu enlace PROXY + M3U8 personalizado:");
             if (!opcion) return;
 
             let url = '';
@@ -662,11 +625,9 @@
                 return;
             }
 
-            // Guardar en el canal actual
             hlsChannels[currentChannel] = { url: url, name: name };
             localStorage.setItem('retro_tv_hls_channels', JSON.stringify(hlsChannels));
             
-            // Limpiar otros formatos en este canal
             delete youtubeChannels[currentChannel];
             delete channelsData[currentChannel];
             localStorage.setItem('retro_tv_yt_channels', JSON.stringify(youtubeChannels));
@@ -675,7 +636,6 @@
             renderCurrentChannel();
         });
 
-        // BUSCADOR DE YOUTUBE
         document.getElementById('btnYouTubeSearch').addEventListener('click', () => {
             ytSearchOverlay.classList.add('active');
             ytSearchInput.focus();
@@ -692,7 +652,6 @@
             ytResultsList.innerHTML = '<p style="color:#fff; text-align:center;">Buscando...</p>';
 
             try {
-                // Usamos yt-search-lib para buscar sin API Key
                 const { default: YouTubeClient } = await import('https://cdn.jsdelivr.net/npm/yt-search-lib@1.0.0/dist/index.mjs');
                 const yt = new YouTubeClient();
                 const results = await yt.search(query);
@@ -711,14 +670,10 @@
                             </div>
                         `;
                         item.addEventListener('click', () => {
-                            // Al hacer clic, cargamos el video en el canal actual
                             const videoId = video.videoId;
-                            
-                            // Guardar como canal de YouTube
                             youtubeChannels[currentChannel] = [videoId];
                             localStorage.setItem('retro_tv_yt_channels', JSON.stringify(youtubeChannels));
                             
-                            // Limpiar otros formatos
                             delete hlsChannels[currentChannel];
                             delete channelsData[currentChannel];
                             localStorage.setItem('retro_tv_hls_channels', JSON.stringify(hlsChannels));
@@ -738,7 +693,6 @@
             }
         });
 
-        // BOTÓN SIGUIENTE
         document.getElementById('btnNext').addEventListener('click', () => {
             if (youtubeChannels[currentChannel] && youtubeChannels[currentChannel].length > 0) {
                 let list = youtubeChannels[currentChannel];
