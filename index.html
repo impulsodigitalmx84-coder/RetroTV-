@@ -62,55 +62,29 @@
             justify-content: center;
         }
 
+        /* Elemento de video local */
         video { width: 100%; height: 100%; object-fit: contain; display: block; background: #000; }
+        
+        /* Contenedor para el iframe de YouTube */
+        #youtubeContainer { width: 100%; height: 100%; display: none; background: #000; }
+        #youtubeContainer iframe { width: 100%; height: 100%; border: none; }
 
-        /* LOGO RETRO TV 90S NEÓN (ESTILO DE TU IMAGEN) */
+        /* LOGO RETRO TV 90S NEÓN */
         .retro-logo-watermark {
-            position: absolute;
-            top: 15px;
-            left: 20px;
-            z-index: 22;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            padding: 4px 8px;
-            border: 2px solid #00f0ff;
-            border-radius: 6px;
-            background: rgba(0, 0, 0, 0.4);
-            box-shadow: 0 0 8px #00f0ff, inset 0 0 6px #ff007f;
-            pointer-events: none;
-            opacity: 0.85;
-            transform: scale(0.85);
-            transform-origin: top left;
+            position: absolute; top: 15px; left: 20px; z-index: 22;
+            display: flex; flex-direction: column; align-items: center; justify-content: center;
+            padding: 4px 8px; border: 2px solid #00f0ff; border-radius: 6px;
+            background: rgba(0, 0, 0, 0.4); box-shadow: 0 0 8px #00f0ff, inset 0 0 6px #ff007f;
+            pointer-events: none; opacity: 0.85; transform: scale(0.85); transform-origin: top left;
         }
-
-        .logo-text-top {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 13px;
-            color: #ff007f;
-            text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f;
-            line-height: 1;
-            letter-spacing: 1px;
-            text-transform: lowercase;
-        }
-
-        .logo-text-bottom {
-            font-family: 'Arial Black', sans-serif;
-            font-size: 14px;
-            color: #00f0ff;
-            text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff;
-            line-height: 1;
-            letter-spacing: 1px;
-            text-transform: lowercase;
-        }
+        .logo-text-top { font-family: 'Arial Black', sans-serif; font-size: 13px; color: #ff007f; text-shadow: 0 0 5px #ff007f, 0 0 10px #ff007f; line-height: 1; letter-spacing: 1px; text-transform: lowercase; }
+        .logo-text-bottom { font-family: 'Arial Black', sans-serif; font-size: 14px; color: #00f0ff; text-shadow: 0 0 5px #00f0ff, 0 0 10px #00f0ff; line-height: 1; letter-spacing: 1px; text-transform: lowercase; }
 
         /* GUÍA EPG Y OSD */
         .channel-osd {
-            position: absolute; top: 15px; right: 20px;
-            color: var(--osd-green); font-size: 20px; font-weight: bold;
-            text-shadow: 0 0 8px var(--osd-green); z-index: 20;
-            pointer-events: none; opacity: 0; transition: opacity 0.2s;
+            position: absolute; top: 15px; right: 20px; color: var(--osd-green);
+            font-size: 20px; font-weight: bold; text-shadow: 0 0 8px var(--osd-green);
+            z-index: 30; pointer-events: none; opacity: 0; transition: opacity 0.2s;
         }
         .channel-osd.show { opacity: 1; }
 
@@ -126,9 +100,9 @@
         .epg-progress-bar { width: 100%; height: 6px; background: #333; border-radius: 3px; overflow: hidden; }
         .epg-progress-fill { height: 100%; background: var(--pluto-yellow); width: 0%; }
 
-        .smpte-bars, .static-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; }
-        .smpte-bars { background: linear-gradient(90deg, #c0c0c0 0% 14.28%, #c0c000 14.28% 28.56%, #00c0c0 28.56% 42.84%, #00c000 42.84% 57.12%, #c000c0 57.12% 71.4%, #c00000 71.4% 85.68%, #0000c0 85.68% 100%); opacity: 0; z-index: 14; }
-        .static-overlay { background: repeating-radial-gradient(circle at 50% 50%, #fff, #000 2px); opacity: 0; z-index: 15; }
+        .smpte-bars, .static-overlay { position: absolute; top: 0; left: 0; width: 100%; height: 100%; pointer-events: none; z-index: 20;}
+        .smpte-bars { background: linear-gradient(90deg, #c0c0c0 0% 14.28%, #c0c000 14.28% 28.56%, #00c0c0 28.56% 42.84%, #00c000 42.84% 57.12%, #c000c0 57.12% 71.4%, #c00000 71.4% 85.68%, #0000c0 85.68% 100%); opacity: 0; }
+        .static-overlay { background: repeating-radial-gradient(circle at 50% 50%, #fff, #000 2px); opacity: 0; }
         .static-overlay.active { opacity: 0.8; animation: staticFlicker 0.05s infinite; }
         .smpte-bars.active { opacity: 0.9; }
 
@@ -154,6 +128,7 @@
 
         .tv-btn:active { transform: translateY(1px); }
         .tv-btn.load-btn { background: linear-gradient(180deg, #228b22, #114b11); border-color: #2e8b57; color: #fff; }
+        .tv-btn.yt-btn { background: linear-gradient(180deg, #cc0000, #7a0000); border-color: #ff3333; color: #fff; }
         .tv-btn.epg-btn { background: linear-gradient(180deg, #d4a017, #7a5c0d); border-color: #ffd700; color: #fff; }
         .tv-btn.fullscreen-btn { background: linear-gradient(180deg, #2252a3, #0e275e); border-color: #356bc2; }
         .tv-btn.power-btn { background: linear-gradient(180deg, #a32222, #5e0e0e); border-color: #c22; color: #fff; }
@@ -164,7 +139,7 @@
             .tv-cabinet { flex-direction: column; height: auto; }
             .screen-bezel { flex: 1; width: 100%; height: 60vh; }
             .controls-panel { flex: 0 0 auto; width: 100%; min-width: unset; height: auto; }
-            .btn-grid { display: grid; grid-template-columns: repeat(4, 1fr); }
+            .btn-grid { display: grid; grid-template-columns: repeat(3, 1fr); }
             .tv-btn { padding: 8px 2px; font-size: 7px; flex-direction: row; }
         }
     </style>
@@ -194,7 +169,11 @@
 
             <div class="smpte-bars" id="smpteBars"></div>
             <div class="static-overlay" id="staticOverlay"></div>
+            
+            <!-- Reproductores -->
             <video id="tvVideo" playsinline></video>
+            <div id="youtubeContainer"></div>
+            
         </div>
     </div>
 
@@ -207,9 +186,12 @@
             <button class="tv-btn epg-btn" id="btnEPG"><i class="fas fa-list"></i> GUÍA</button>
             
             <label class="tv-btn load-btn">
-                <i class="fas fa-folder-open"></i> AÑADIR
+                <i class="fas fa-folder-open"></i> LOCALES
                 <input type="file" id="fileInput" accept="video/*" multiple webkitdirectory directory>
             </label>
+
+            <!-- NUEVO BOTÓN YOUTUBE -->
+            <button class="tv-btn yt-btn" id="btnYouTube"><i class="fab fa-youtube"></i> YOUTUBE</button>
             
             <button class="tv-btn fullscreen-btn" id="btnFullscreen"><i class="fas fa-expand"></i> FULL</button>
             <button class="tv-btn power-btn" id="btnPower"><i class="fas fa-power-off"></i> POWER</button>
@@ -219,10 +201,15 @@
 
 <script>
     const MIN_CHANNEL = 2; const MAX_CHANNEL = 40;
-    let currentChannel = 2; let channelsData = {}; let isPowerOn = true;
+    let currentChannel = 2; 
+    let channelsData = {}; 
+    let youtubeChannels = JSON.parse(localStorage.getItem('retro_tv_yt_channels')) || {}; // NUEVO: Memoria para YouTube
+    let isPowerOn = true;
+    
     let audioCtx = null; let gainNode = null; let sourceNode = null; let currentVolumeLevel = 0.8;
 
     const video = document.getElementById('tvVideo');
+    const ytContainer = document.getElementById('youtubeContainer');
     const osd = document.getElementById('channelOSD');
     const staticOverlay = document.getElementById('staticOverlay');
     const smpteBars = document.getElementById('smpteBars');
@@ -295,10 +282,18 @@
         return { videoItem: playlist[0], seekTime: 0, duration: playlist[0].duration };
     }
 
+    // EXTRAER ID DE YOUTUBE
+    function extractYouTubeID(urlOrId) {
+        if (urlOrId.length === 11) return urlOrId; // Ya es un ID
+        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+        const match = urlOrId.match(regExp);
+        return (match && match[2].length === 11) ? match[2] : null;
+    }
+
     function renderCurrentChannel() {
         if (!isPowerOn) return;
-        const liveState = getLivePlaybackState(currentChannel);
-
+        
+        // Efectos de transición de canal (Estática y barras)
         smpteBars.classList.add('active');
         playBeepAndStatic();
         showOSD(`CH ${String(currentChannel).padStart(2, '0')}`);
@@ -307,12 +302,35 @@
             smpteBars.classList.remove('active');
             staticOverlay.classList.add('active');
 
+            // 1. VERIFICAR SI ES UN CANAL DE YOUTUBE
+            if (youtubeChannels[currentChannel]) {
+                video.style.display = 'none';
+                video.removeAttribute('src'); 
+                video.load(); // Detiene audio local
+                
+                ytContainer.style.display = 'block';
+                // Se añade mute=1 porque los navegadores bloquean autoplay con sonido
+                // El usuario puede quitar el silencio desde los controles de YouTube
+                ytContainer.innerHTML = `<iframe src="https://www.youtube.com/embed/${youtubeChannels[currentChannel]}?autoplay=1&mute=0&controls=1&rel=0" allow="autoplay; encrypted-media" allowfullscreen></iframe>`;
+                
+                updateEPG({ isYT: true, title: "Transmisión de YouTube" });
+                setTimeout(() => staticOverlay.classList.remove('active'), 150);
+                return;
+            }
+
+            // 2. SI NO ES YOUTUBE, ES UN CANAL LOCAL
+            ytContainer.style.display = 'none';
+            ytContainer.innerHTML = ''; // Detiene el video de YouTube
+            
+            const liveState = getLivePlaybackState(currentChannel);
+
             if (!liveState || !liveState.videoItem.file) {
                 video.removeAttribute('src'); video.load(); updateEPG(null);
                 setTimeout(() => staticOverlay.classList.remove('active'), 150);
                 return;
             }
 
+            video.style.display = 'block';
             video.src = URL.createObjectURL(liveState.videoItem.file);
             video.onloadedmetadata = () => {
                 video.currentTime = liveState.seekTime;
@@ -338,11 +356,25 @@
             return;
         }
         document.getElementById('epgChannel').textContent = `CANAL ${String(currentChannel).padStart(2, '0')}`;
-        document.getElementById('epgTitle').textContent = liveState.videoItem.file.name.replace(/\.[^/.]+$/, "");
-        document.getElementById('epgProgress').style.width = `${(liveState.seekTime / liveState.duration) * 100}%`;
+        
+        if (liveState.isYT) {
+            document.getElementById('epgTitle').textContent = liveState.title;
+            document.getElementById('epgProgress').style.width = "0%"; // No hay barra de progreso en YT sin API
+            document.getElementById('epgTime').textContent = "YOUTUBE LIVE";
+        } else {
+            document.getElementById('epgTitle').textContent = liveState.videoItem.file.name.replace(/\.[^/.]+$/, "");
+            document.getElementById('epgProgress').style.width = `${(liveState.seekTime / liveState.duration) * 100}%`;
+            document.getElementById('epgTime').textContent = "EN VIVO";
+        }
     }
 
     function adjustGainVolume(delta) {
+        // Si estamos en YouTube, los controles de volumen propios no funcionan (por seguridad del iframe)
+        if (youtubeChannels[currentChannel]) {
+            showOSD("USA LOS CONTROLES DE YT");
+            return;
+        }
+
         initAudioContext();
         currentVolumeLevel = Math.max(0, Math.min(1, currentVolumeLevel + delta));
         if (gainNode) gainNode.gain.setValueAtTime(currentVolumeLevel, audioCtx.currentTime);
@@ -350,10 +382,17 @@
     }
 
     window.addEventListener('DOMContentLoaded', () => {
+        
+        // CARGAR ARCHIVOS LOCALES
         document.getElementById('fileInput').addEventListener('change', async (e) => {
             const files = Array.from(e.target.files).filter(f => f.type.startsWith('video/'));
             if (files.length === 0) return;
             showOSD('PROCESANDO...');
+            
+            // Si carga archivos locales, borramos el YouTube de este canal
+            delete youtubeChannels[currentChannel];
+            localStorage.setItem('retro_tv_yt_channels', JSON.stringify(youtubeChannels));
+
             const playlist = [];
             for (let file of files) {
                 const duration = await getVideoDuration(file);
@@ -364,22 +403,54 @@
             renderCurrentChannel();
         });
 
+        // NUEVO: AÑADIR YOUTUBE AL CANAL
+        document.getElementById('btnYouTube').addEventListener('click', () => {
+            const url = prompt("Pega el enlace del video de YouTube (o el ID de 11 caracteres):");
+            if (url) {
+                const videoId = extractYouTubeID(url.trim());
+                if (videoId) {
+                    // Guardar en el objeto de YouTube para este canal
+                    youtubeChannels[currentChannel] = videoId;
+                    localStorage.setItem('retro_tv_yt_channels', JSON.stringify(youtubeChannels));
+                    
+                    // Si había archivos locales en este canal, los quitamos para evitar conflictos
+                    delete channelsData[currentChannel];
+                    localStorage.removeItem(`retro_tv_ch_${currentChannel}`);
+                    
+                    renderCurrentChannel();
+                } else {
+                    alert("Enlace de YouTube inválido. Intenta de nuevo.");
+                }
+            }
+        });
+
         document.getElementById('btnChUp').addEventListener('click', () => {
             currentChannel = (currentChannel >= MAX_CHANNEL) ? MIN_CHANNEL : currentChannel + 1;
             renderCurrentChannel();
         });
+        
         document.getElementById('btnChDown').addEventListener('click', () => {
             currentChannel = (currentChannel <= MIN_CHANNEL) ? MIN_CHANNEL : currentChannel - 1;
             renderCurrentChannel();
         });
+        
         document.getElementById('btnEPG').addEventListener('click', () => epgOverlay.classList.toggle('active'));
         document.getElementById('btnVolUp').addEventListener('click', () => adjustGainVolume(0.1));
         document.getElementById('btnVolDown').addEventListener('click', () => adjustGainVolume(-0.1));
 
         document.getElementById('btnPower').addEventListener('click', () => {
             isPowerOn = !isPowerOn;
-            if (!isPowerOn) { video.pause(); video.style.display = 'none'; epgOverlay.classList.remove('active'); showOSD('POWER OFF'); }
-            else { video.style.display = 'block'; renderCurrentChannel(); }
+            if (!isPowerOn) { 
+                video.pause(); 
+                video.style.display = 'none'; 
+                ytContainer.style.display = 'none';
+                ytContainer.innerHTML = ''; 
+                epgOverlay.classList.remove('active'); 
+                showOSD('POWER OFF'); 
+            }
+            else { 
+                renderCurrentChannel(); 
+            }
         });
 
         document.getElementById('btnFullscreen').addEventListener('click', () => {
@@ -389,11 +460,14 @@
         });
 
         video.addEventListener('timeupdate', () => {
+            if (youtubeChannels[currentChannel]) return; // Ignorar si es YT
             const liveState = getLivePlaybackState(currentChannel);
             if (liveState) updateEPG(liveState);
         });
+        
         video.addEventListener('ended', () => renderCurrentChannel());
 
+        // Iniciar TV
         renderCurrentChannel();
     });
 </script>
