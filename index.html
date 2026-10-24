@@ -252,8 +252,8 @@
             <div class="smpte-bars" id="smpteBars"></div>
             <div class="static-overlay" id="staticOverlay"></div>
             
-            <!-- ATRIBUTO CROSSORIGIN AÑADIDO AQUÍ PARA EVITAR BLOQUEOS DE VIDEO EN CELULAR -->
-            <video id="tvVideo" playsinline crossorigin="anonymous"></video>
+            <!-- AQUÍ SE QUITÓ EL CROSSORIGIN PARA EVITAR BLOQUEOS EN CELULAR -->
+            <video id="tvVideo" playsinline></video>
             <div id="youtubeContainer"></div>
 
             <div class="crt-overlay"></div>
@@ -468,7 +468,6 @@
 
                 if (Hls.isSupported()) {
                     destroyHls();
-                    // Configuración extra para evitar bloqueos de CORS
                     hlsInstance = new Hls({
                         xhrSetup: function(xhr, url) {
                             xhr.withCredentials = false; 
@@ -480,13 +479,12 @@
                         video.play().catch(() => {});
                     });
 
-                    // NUEVO: Capturar errores para que no se quede en negro
                     hlsInstance.on(Hls.Events.ERROR, function (event, data) {
                         if (data.fatal) {
                             switch (data.type) {
                                 case Hls.ErrorTypes.NETWORK_ERROR:
                                     showOSD("ERROR DE RED");
-                                    alert("No se pudo conectar al canal. Es posible que el enlace esté caído o tu Proxy no esté funcionando. Revisa que hayas puesto la URL de Cloudflare.");
+                                    alert("No se pudo conectar al canal. Es posible que el enlace esté caído o tu Proxy no esté funcionando.");
                                     destroyHls();
                                     break;
                                 case Hls.ErrorTypes.MEDIA_ERROR:
