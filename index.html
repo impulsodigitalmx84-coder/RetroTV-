@@ -63,8 +63,6 @@
             justify-content: center;
         }
 
-        /* Nota: El filtro CRT (rayas) ha sido eliminado */
-
         .timeline-container {
             position: absolute;
             bottom: 0; left: 0; width: 100%;
@@ -483,7 +481,6 @@
                 }
 
                 updateEPG({ isHLS: true, title: hlsName });
-                // Aquí ya no forzamos la eliminación de estática, se hace en el evento play() de arriba.
                 return;
             }
 
@@ -622,7 +619,7 @@
             ytSearchOverlay.classList.remove('active');
         });
 
-        // NUEVO BUSCADOR CON PIPED API (MÁS ESTABLE)
+        // BUSCADOR DE YOUTUBE PASANDO POR EL PROXY DE CLOUDFLARE
         document.getElementById('ytSearchBtn').addEventListener('click', async () => {
             const query = ytSearchInput.value.trim();
             if (!query) return;
@@ -630,18 +627,19 @@
             ytResultsList.innerHTML = '<p style="color:#fff; text-align:center;">Buscando...</p>';
 
             try {
-                // Piped es una API de código abierto que permite buscar en YouTube sin bloqueos ni API Keys
-                const response = await fetch(`https://pipedapi.adminforge.de/search?q=${encodeURIComponent(query)}&filter=videos`);
+                const apiUrl = `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=videos`;
+                // Usamos tu dominio de Cloudflare como puente para evitar el bloqueo CORS
+                const proxyUrl = `https://escaladafinanciera.mx/?url=${encodeURIComponent(apiUrl)}`;
+                
+                const response = await fetch(proxyUrl);
                 const data = await response.json();
 
                 ytResultsList.innerHTML = '';
                 
                 if (data && data.items && data.items.length > 0) {
-                    // Filtrar solo los que son videos
                     const videos = data.items.filter(item => item.type === 'stream').slice(0, 10);
                     
                     videos.forEach(video => {
-                        // Extraer el ID del video
                         const videoId = video.url.split('v=')[1];
                         
                         const item = document.createElement('div');
@@ -672,7 +670,7 @@
                 }
             } catch (error) {
                 console.error(error);
-                ytResultsList.innerHTML = '<p style="color:#ff6666; text-align:center;">Error al buscar. Revisa tu conexión o intenta de nuevo.</p>';
+                ytResultsList.innerHTML = '<p style="color:#ff6666; text-align:center;">Error al buscar. Revisa tu conexión.</p>';
             }
         });
 
