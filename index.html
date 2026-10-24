@@ -263,7 +263,8 @@
                 <input type="file" id="fileInput" accept="video/*" multiple webkitdirectory directory>
             </label>
 
-            <button class="tv-btn hls-btn" id="btnHLS"><i class="fas fa-tv"></i> ANIME 24/7</button>
+            <!-- Botón renombrado para aceptar enlaces IPTV -->
+            <button class="tv-btn hls-btn" id="btnHLS"><i class="fas fa-tv"></i> IPTV / URL</button>
             <button class="tv-btn yt-btn" id="btnYouTubeSearch"><i class="fab fa-youtube"></i> BUSCAR YT</button>
             
             <button class="tv-btn dl-btn" id="btnDownload"><i class="fas fa-download"></i> DESCARGAR</button>
@@ -300,6 +301,9 @@
     const ytSearchOverlay = document.getElementById('ytSearchOverlay');
     const ytSearchInput = document.getElementById('ytSearchInput');
     const ytResultsList = document.getElementById('ytResultsList');
+
+    // Tu dominio proxy de Cloudflare
+    const MY_PROXY = 'https://escaladafinanciera.mx/?url=';
 
     const HLS_STREAMS = {
         naruto: 'https://d21vn5eki5qsdi.cloudfront.net/playlist.m3u8',
@@ -379,15 +383,6 @@
         return { videoItem: playlist[0], seekTime: 0, duration: playlist[0].duration };
     }
 
-    function extractYouTubeID(urlOrId) {
-        if (!urlOrId) return null;
-        const cleanStr = urlOrId.trim();
-        if (cleanStr.length === 11) return cleanStr;
-        const regExp = /^.*(youtu.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
-        const match = cleanStr.match(regExp);
-        return (match && match[2].length === 11) ? match[2] : null;
-    }
-
     function destroyHls() {
         if (hlsInstance) {
             hlsInstance.destroy();
@@ -461,7 +456,7 @@
                             switch (data.type) {
                                 case Hls.ErrorTypes.NETWORK_ERROR:
                                     showOSD("ERROR DE RED");
-                                    alert("No se pudo conectar al canal. Es posible que el enlace esté caído o tu Proxy no esté funcionando.");
+                                    // alert("No se pudo conectar al canal. Es posible que el enlace esté caído o tu Proxy no esté funcionando.");
                                     destroyHls();
                                     break;
                                 case Hls.ErrorTypes.MEDIA_ERROR:
@@ -556,6 +551,45 @@
         showOSD(`VOL ${Math.round(currentVolumeLevel * 100)}%`);
     }
 
+    // FUNCIÓN PARA EXTRAER DATOS DE YOUTUBE DESDE EL HTML
+    function extractYtInitialData(html) {
+        const match = html.match(/var ytInitialData = ({.+?});/);
+        if (match && match[1]) {
+            try {
+                return JSON.parse(match[1]);
+            } catch(e) {
+                return null;
+            }
+        }
+        return null;
+    }
+
+    // BUSCA RECURSIVAMENTE LOS VIDEOS EN EL JSON DE YOUTUBE
+    function findVideos(obj, videos = []) {
+        if (!obj || typeof obj !== 'object') return videos;
+        
+        if (obj.videoRenderer) {
+            const v = obj.videoRenderer;
+            try {
+                const videoId = v.videoId;
+                const title = v.title.runs[0].text;
+                const thumbnail = v.thumbnail.thumbnails[0].url;
+                const channel = v.ownerText.runs[0].text;
+                
+                if (videoId && title) {
+                    videos.push({ videoId, title, thumbnail, channel });
+                }
+            } catch(e) {}
+        }
+        
+        for (let key in obj) {
+            if (typeof obj[key] === 'object') {
+                findVideos(obj[key], videos);
+            }
+        }
+        return videos;
+    }
+
     window.addEventListener('DOMContentLoaded', () => {
         
         document.getElementById('fileInput').addEventListener('change', async (e) => {
@@ -619,7 +653,7 @@
             ytSearchOverlay.classList.remove('active');
         });
 
-        // BUSCADOR DE YOUTUBE PASANDO POR EL PROXY DE CLOUDFLARE
+        // NUEVO BUSCADOR DIRECTO USANDO EL PROXY
         document.getElementById('ytSearchBtn').addEventListener('click', async () => {
             const query = ytSearchInput.value.trim();
             if (!query) return;
@@ -627,32 +661,34 @@
             ytResultsList.innerHTML = '<p style="color:#fff; text-align:center;">Buscando...</p>';
 
             try {
-                const apiUrl = `https://pipedapi.kavin.rocks/search?q=${encodeURIComponent(query)}&filter=videos`;
-                // Usamos tu dominio de Cloudflare como puente para evitar el bloqueo CORS
-                const proxyUrl = `https://escaladafinanciera.mx/?url=${encodeURIComponent(apiUrl)}`;
+                // Hacemos la búsqueda pasando por nuestro Worker Proxy
+                const ytUrl = `https://www.youtube.com/results?search_query=${encodeURIComponent(query)}`;
+                const proxyUrl = `${MY_PROXY}${encodeURIComponent(ytUrl)}`;
                 
                 const response = await fetch(proxyUrl);
-                const data = await response.json();
+                const html = await response.text();
+                
+                // Extraemos los datos usando la función de parseo
+                const data = extractYtInitialData(html);
+                if (!data) throw new Error("No se pudo leer YouTube");
+
+                const videos = findVideos(data).slice(0, 10); // Máximo 10 resultados
 
                 ytResultsList.innerHTML = '';
                 
-                if (data && data.items && data.items.length > 0) {
-                    const videos = data.items.filter(item => item.type === 'stream').slice(0, 10);
-                    
+                if (videos.length > 0) {
                     videos.forEach(video => {
-                        const videoId = video.url.split('v=')[1];
-                        
                         const item = document.createElement('div');
                         item.className = 'yt-result-item';
                         item.innerHTML = `
                             <img src="${video.thumbnail}" class="yt-result-thumb" alt="${video.title}">
                             <div class="yt-result-info">
                                 <div class="yt-result-title">${video.title}</div>
-                                <div class="yt-result-channel">${video.uploaderName || 'Canal desconocido'}</div>
+                                <div class="yt-result-channel">${video.channel}</div>
                             </div>
                         `;
                         item.addEventListener('click', () => {
-                            youtubeChannels[currentChannel] = [videoId];
+                            youtubeChannels[currentChannel] = [video.videoId];
                             localStorage.setItem('retro_tv_yt_channels', JSON.stringify(youtubeChannels));
                             
                             delete hlsChannels[currentChannel];
