@@ -2,12 +2,10 @@
 <html lang="es">
 <head>
   <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Retro TV 90</title>
   <link rel="manifest" href="manifest.json">
   <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=VT323&display=swap" rel="stylesheet">
-  
-  <!-- Librerías para canales en vivo (.m3u8) y YouTube -->
   <script src="https://cdn.jsdelivr.net/npm/hls.js@latest"></script>
   <script src="https://www.youtube.com/iframe_api"></script>
 
@@ -16,256 +14,259 @@
       box-sizing: border-box;
       margin: 0;
       padding: 0;
-      user-select: none;
     }
 
     body {
-      background-color: #121212;
-      color: #fff;
+      background-color: #141414;
+      color: #f3f3f3;
       font-family: 'VT323', monospace;
-      display: flex;
-      justify-content: center;
-      align-items: center;
       min-height: 100vh;
-      overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 14px;
+      gap: 12px;
+    }
+
+    /* Barra superior de Buscador y Compartir */
+    .top-bar {
+      width: 100%;
+      max-width: 980px;
+      background: #22211f;
+      border: 2px solid #3a3835;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .search-box {
+      display: flex;
+      flex: 1 1 320px;
+      gap: 8px;
+    }
+
+    .search-input {
+      flex: 1;
+      background: #111;
+      border: 2px solid #444;
+      color: #39ff14;
+      font-family: 'VT323', monospace;
+      font-size: 20px;
+      padding: 6px 12px;
+      border-radius: 8px;
+      outline: none;
+    }
+
+    .search-input:focus {
+      border-color: #39ff14;
+    }
+
+    .action-btn {
+      background: linear-gradient(180deg, #4b4946, #2d2c2a);
+      color: #fff;
+      border: 2px solid #161616;
+      border-bottom: 4px solid #111;
+      border-radius: 8px;
+      padding: 7px 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .action-btn:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .btn-green {
+      background: linear-gradient(180deg, #2b9348, #1b6630);
+    }
+
+    .btn-blue {
+      background: linear-gradient(180deg, #2563eb, #1d4ed8);
+    }
+
+    /* Carcasa Retro TV 90 */
+    .tv-casing {
+      width: 100%;
+      max-width: 980px;
+      background: linear-gradient(145deg, #3c3a37, #242321);
+      border: 5px solid #181817;
+      border-radius: 24px;
+      padding: 18px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    .screen-bezel {
+      background: #0c0c0c;
+      border: 3px solid #2c2a28;
+      border-radius: 18px;
       padding: 10px;
     }
 
-    /* Carcasa del Televisor */
-    .tv-casing {
-      background: linear-gradient(145deg, #3a3835, #232220);
-      border: 6px solid #1a1918;
-      border-radius: 28px;
-      padding: 22px;
-      width: 100%;
-      max-width: 960px;
-      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.9), inset 0 2px 5px rgba(255, 255, 255, 0.15);
-      display: flex;
-      flex-direction: column;
-      gap: 18px;
-    }
-
-    /* Marco interior de la pantalla */
-    .screen-bezel {
-      background: #0d0d0d;
-      border-radius: 22px;
-      padding: 14px;
-      box-shadow: inset 0 0 25px #000;
-      border: 3px solid #2b2927;
-    }
-
-    /* Pantalla CRT */
     .crt-screen {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
       background: #050505;
-      border-radius: 16px;
+      border-radius: 12px;
       overflow: hidden;
-      box-shadow: inset 0 0 50px rgba(0, 0, 0, 0.95);
     }
 
-    /* Video y Reproductor YouTube */
-    video, #yt-player-wrapper {
+    video, #yt-player-box {
       position: absolute;
-      top: 0;
-      left: 0;
+      inset: 0;
       width: 100%;
       height: 100%;
+      border: 0;
+    }
+
+    video {
       object-fit: cover;
     }
 
-    #yt-player-wrapper {
-      pointer-events: none;
+    #yt-player-box {
       display: none;
-      transform: scale(1.06); /* Recorta bordes negros de YouTube */
     }
 
-    /* Efecto Scanlines y Viñeta CRT */
     .scanlines {
       position: absolute;
       inset: 0;
-      background: linear-gradient(
-        rgba(18, 16, 16, 0) 50%, 
-        rgba(0, 0, 0, 0.35) 50%
-      ), linear-gradient(
-        90deg,
-        rgba(255, 0, 0, 0.04),
-        rgba(0, 255, 0, 0.01),
-        rgba(0, 0, 255, 0.04)
-      );
-      background-size: 100% 4px, 6px 100%;
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%);
+      background-size: 100% 4px;
       pointer-events: none;
-      z-index: 10;
+      z-index: 6;
     }
 
-    .crt-vignette {
+    .osd {
       position: absolute;
-      inset: 0;
-      box-shadow: inset 0 0 70px rgba(0,0,0,0.85);
-      border-radius: 16px;
-      pointer-events: none;
-      z-index: 11;
-    }
-
-    /* Pantalla apagada / Estática */
-    .static-noise {
-      position: absolute;
-      inset: 0;
-      background-color: #111;
-      background-image: radial-gradient(#444 1px, transparent 0);
-      background-size: 4px 4px;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      z-index: 5;
-      opacity: 0;
-      pointer-events: none;
-      transition: opacity 0.2s;
-    }
-
-    .static-noise.active {
-      opacity: 1;
-    }
-
-    .tv-off-screen {
-      position: absolute;
-      inset: 0;
-      background: #050505;
-      z-index: 20;
-      display: none;
-    }
-
-    /* OSD (Texto verde estilo tele vieja) */
-    .osd-overlay {
-      position: absolute;
-      top: 20px;
-      left: 24px;
-      right: 24px;
+      top: 16px;
+      left: 18px;
+      right: 18px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
-      z-index: 15;
+      z-index: 8;
       pointer-events: none;
-      text-shadow: 2px 2px 0px #000, -1px -1px 0 #000;
-      transition: opacity 0.5s ease;
+      text-shadow: 2px 2px 0 #000;
+      transition: opacity 0.4s;
     }
 
-    .osd-hidden {
+    .osd.hidden {
       opacity: 0;
     }
 
-    .osd-left {
-      display: flex;
-      flex-direction: column;
-      gap: 4px;
-    }
-
-    .osd-channel-num {
+    .osd-ch {
       font-family: 'Press Start 2P', monospace;
-      font-size: clamp(18px, 3vw, 28px);
+      font-size: 20px;
       color: #39ff14;
+      margin-bottom: 4px;
     }
 
-    .osd-channel-name {
-      font-size: clamp(18px, 2.5vw, 24px);
-      color: #fff;
+    .osd-title {
+      font-size: 22px;
       background: rgba(0, 0, 0, 0.65);
       padding: 2px 8px;
-      border-left: 4px solid #39ff14;
+      border-left: 3px solid #39ff14;
     }
 
-    .osd-program {
-      font-size: clamp(15px, 2vw, 20px);
+    .osd-sub {
+      font-size: 18px;
       color: #ffea00;
       background: rgba(0, 0, 0, 0.65);
       padding: 2px 8px;
+      margin-top: 2px;
     }
 
-    .osd-badge {
-      background: #d90429;
-      color: #fff;
+    .osd-live {
+      background: #c1121f;
       font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
-      padding: 6px 10px;
+      font-size: 10px;
+      padding: 6px 8px;
       border-radius: 4px;
-      animation: blink 1.5s infinite;
     }
 
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0.4; }
+    .static-overlay {
+      position: absolute;
+      inset: 0;
+      background: #141414 repeating-radial-gradient(#444 0 1px, transparent 1px 4px);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 7;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #fff;
     }
 
-    /* Panel de Controles Físicos */
-    .control-panel {
+    .static-overlay.active {
+      display: flex;
+    }
+
+    .off-overlay {
+      position: absolute;
+      inset: 0;
+      background: #040404;
+      display: none;
+      z-index: 12;
+    }
+
+    /* Barra de canales */
+    .channels-bar {
+      display: flex;
+      gap: 8px;
+      overflow-x: auto;
+      padding-bottom: 4px;
+      align-items: center;
+    }
+
+    .ch-pill {
+      background: #2c2a28;
+      color: #ddd;
+      border: 1px solid #484542;
+      border-radius: 6px;
+      padding: 6px 12px;
+      font-size: 18px;
+      cursor: pointer;
+      white-space: nowrap;
+    }
+
+    .ch-pill.active {
+      background: #39ff14;
+      color: #000;
+      font-weight: bold;
+      border-color: #39ff14;
+    }
+
+    /* Panel de control inferior */
+    .controls-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      background: #1f1e1c;
-      padding: 14px 20px;
-      border-radius: 16px;
+      gap: 12px;
+      background: #1e1d1b;
+      padding: 12px 16px;
+      border-radius: 14px;
       border: 2px solid #33312e;
-      gap: 15px;
     }
 
-    .brand-logo {
+    .brand {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 8px;
     }
 
-    .brand-retro {
-      font-family: 'Press Start 2P', monospace;
-      font-size: 16px;
-      color: #e0e0e0;
-      letter-spacing: 1px;
-    }
-
-    .brand-90 {
-      background: #ff5400;
-      color: #fff;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 12px;
-      padding: 4px 7px;
-      border-radius: 4px;
-    }
-
-    .buttons-group {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      flex-wrap: wrap;
-    }
-
-    .retro-btn {
-      background: linear-gradient(180deg, #4a4845, #2e2d2b);
-      color: #f0f0f0;
-      border: 2px solid #141414;
-      border-bottom: 5px solid #111;
-      border-radius: 8px;
-      padding: 10px 14px;
-      font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
-      cursor: pointer;
-      transition: transform 0.08s, border-bottom 0.08s;
-      display: flex;
-      align-items: center;
-      gap: 6px;
-    }
-
-    .retro-btn:active {
-      transform: translateY(3px);
-      border-bottom: 2px solid #111;
-    }
-
-    .btn-power {
-      background: linear-gradient(180deg, #c1121f, #780000);
-      color: #fff;
-    }
-
-    .led-indicator {
+    .led {
       width: 10px;
       height: 10px;
       border-radius: 50%;
@@ -273,373 +274,671 @@
       box-shadow: 0 0 8px #39ff14;
     }
 
-    .led-indicator.off {
-      background: #4a0000;
+    .led.off {
+      background: #550000;
       box-shadow: none;
     }
 
-    /* Selector Rápido de Canales (Parrilla) */
-    .channel-guide {
+    .brand-text {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 14px;
+    }
+
+    .brand-90 {
+      background: #ff5400;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 11px;
+      padding: 4px 6px;
+      border-radius: 4px;
+    }
+
+    .btns {
       display: flex;
+      flex-wrap: wrap;
       gap: 8px;
-      overflow-x: auto;
-      padding-bottom: 4px;
     }
 
-    .channel-chip {
-      background: #2b2927;
-      border: 1px solid #444;
-      color: #ccc;
-      padding: 6px 12px;
-      border-radius: 6px;
-      font-size: 16px;
-      cursor: pointer;
-      white-space: nowrap;
-      transition: all 0.2s;
-    }
-
-    .channel-chip:hover {
-      background: #3d3a37;
+    .tv-btn {
+      background: linear-gradient(180deg, #4a4845, #2e2d2b);
       color: #fff;
+      border: 2px solid #151515;
+      border-bottom: 4px solid #111;
+      border-radius: 7px;
+      padding: 8px 12px;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      cursor: pointer;
     }
 
-    .channel-chip.active {
+    .tv-btn:active {
+      transform: translateY(2px);
+      border-bottom-width: 2px;
+    }
+
+    .tv-btn.power {
+      background: linear-gradient(180deg, #c1121f, #780000);
+    }
+
+    /* Resultados rápidos del buscador */
+    .search-results {
+      width: 100%;
+      max-width: 980px;
+      background: #1c1b19;
+      border: 2px solid #353330;
+      border-radius: 12px;
+      padding: 10px 14px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .search-results.show {
+      display: flex;
+    }
+
+    .result-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #272523;
+      padding: 8px 12px;
+      border-radius: 8px;
+      font-size: 19px;
+    }
+
+    /* Modal para agregar canal */
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(0, 0, 0, 0.78);
+      display: none;
+      align-items: center;
+      justify-content: center;
+      z-index: 50;
+      padding: 14px;
+    }
+
+    .modal-backdrop.open {
+      display: flex;
+    }
+
+    .modal {
+      width: 100%;
+      max-width: 460px;
+      background: #242321;
+      border: 3px solid #444;
+      border-radius: 14px;
+      padding: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .modal h3 {
+      font-family: 'Press Start 2P', monospace;
+      font-size: 13px;
+      color: #39ff14;
+    }
+
+    .field {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .field label {
+      font-size: 18px;
+      color: #ddd;
+    }
+
+    .field input, .field select {
+      background: #121212;
+      border: 2px solid #444;
+      color: #fff;
+      font-family: 'VT323', monospace;
+      font-size: 19px;
+      padding: 6px 10px;
+      border-radius: 8px;
+    }
+
+    .modal-actions {
+      display: flex;
+      justify-content: flex-end;
+      gap: 8px;
+      margin-top: 6px;
+    }
+
+    .toast {
+      position: fixed;
+      bottom: 18px;
+      right: 18px;
       background: #39ff14;
       color: #000;
-      font-weight: bold;
-      border-color: #39ff14;
+      font-family: 'Press Start 2P', monospace;
+      font-size: 10px;
+      padding: 10px 14px;
+      border-radius: 8px;
+      z-index: 100;
+      display: none;
     }
   </style>
 </head>
 <body>
 
+  <!-- Buscador de YouTube + Compartir + Agregar Canal -->
+  <div class="top-bar">
+    <div class="search-box">
+      <input
+        type="text"
+        id="yt-search-input"
+        class="search-input"
+        placeholder="Buscar caricaturas, anime, luchas o pega link/ID de YouTube..."
+        oninput="filtrarCatalogo()"
+        onkeydown="if(event.key==='Enter') ejecutarBusquedaYouTube()"
+      >
+      <button class="action-btn btn-green" onclick="ejecutarBusquedaYouTube()">BUSCAR / CARGAR</button>
+    </div>
+    <button class="action-btn" onclick="abrirModalCanal()">+ CANAL</button>
+    <button class="action-btn btn-blue" onclick="compartirActual()">COMPARTIR</button>
+  </div>
+
+  <!-- Lista de resultados rápidos -->
+  <div class="search-results" id="search-results"></div>
+
+  <!-- Televisor Retro TV 90 -->
   <div class="tv-casing">
-    <!-- Pantalla -->
     <div class="screen-bezel">
-      <div class="crt-screen" id="crt-screen">
-        <!-- Reproductor HLS en vivo -->
-        <video id="hls-video" playsinline></video>
-        
-        <!-- Contenedor YouTube -->
-        <div id="yt-player-wrapper">
-          <div id="yt-player"></div>
-        </div>
+      <div class="crt-screen">
+        <video id="video-player" playsinline controls></video>
+        <div id="yt-player-box"><div id="yt-player"></div></div>
 
-        <!-- Estática al cambiar canal -->
-        <div class="static-noise" id="static-screen">
-          <span style="font-family: 'Press Start 2P'; color: #fff; background: #000; padding: 8px;">SINTONIZANDO...</span>
-        </div>
+        <div class="static-overlay" id="static-overlay">SINTONIZANDO...</div>
+        <div class="off-overlay" id="off-overlay"></div>
 
-        <!-- Pantalla negra cuando está apagada -->
-        <div class="tv-off-screen" id="tv-off-screen"></div>
-
-        <!-- OSD Info del Canal -->
-        <div class="osd-overlay" id="osd-overlay">
-          <div class="osd-left">
-            <div class="osd-channel-num" id="osd-num">CH 02</div>
-            <div class="osd-channel-name" id="osd-name">CARGANDO SEÑAL...</div>
-            <div class="osd-program" id="osd-prog">Presiona un botón si no hay audio</div>
+        <div class="osd" id="osd">
+          <div>
+            <div class="osd-ch" id="osd-ch">CH 02</div>
+            <div class="osd-title" id="osd-title">CARICATURAS RETRO</div>
+            <div class="osd-sub" id="osd-sub">Listo para reproducir</div>
           </div>
-          <div class="osd-badge" id="osd-badge">EN VIVO</div>
+          <div class="osd-live">EN VIVO</div>
         </div>
 
-        <!-- Efectos CRT -->
         <div class="scanlines"></div>
-        <div class="crt-vignette"></div>
       </div>
     </div>
 
-    <!-- Barra rápida de canales -->
-    <div class="channel-guide" id="channel-guide"></div>
+    <!-- Barra de canales -->
+    <div class="channels-bar" id="channels-bar"></div>
 
-    <!-- Panel de Controles -->
-    <div class="control-panel">
-      <div class="brand-logo">
-        <div class="led-indicator" id="power-led"></div>
-        <span class="brand-retro">RETRO</span>
+    <!-- Controles inferiores -->
+    <div class="controls-row">
+      <div class="brand">
+        <div class="led" id="led"></div>
+        <span class="brand-text">RETRO</span>
         <span class="brand-90">TV 90</span>
       </div>
 
-      <div class="buttons-group">
-        <button class="retro-btn" onclick="canalAnterior()">CH -</button>
-        <button class="retro-btn" onclick="canalSiguiente()">CH +</button>
-        <button class="retro-btn" onclick="toggleMute()" id="btn-mute">🔊 AUDIO</button>
-        <button class="retro-btn" onclick="mostrarOSD()">INFO</button>
-        <button class="retro-btn btn-power" onclick="togglePower()">POWER</button>
+      <div class="btns">
+        <button class="tv-btn" onclick="canalAnterior()">CH -</button>
+        <button class="tv-btn" onclick="canalSiguiente()">CH +</button>
+        <button class="tv-btn" id="btn-audio" onclick="toggleMute()">AUDIO</button>
+        <button class="tv-btn" onclick="mostrarOSD()">INFO</button>
+        <button class="tv-btn power" onclick="togglePower()">POWER</button>
       </div>
     </div>
   </div>
 
+  <!-- Modal para agregar canal personalizado -->
+  <div class="modal-backdrop" id="modal-canal">
+    <div class="modal">
+      <h3>AGREGAR NUEVO CANAL</h3>
+      <div class="field">
+        <label>Nombre del canal</label>
+        <input type="text" id="new-ch-name" placeholder="Ej. CANAL 09 - DRAGON BALL">
+      </div>
+      <div class="field">
+        <label>Programa / Descripción</label>
+        <input type="text" id="new-ch-prog" placeholder="Ej. Episodios Clásicos">
+      </div>
+      <div class="field">
+        <label>Tipo de transmisión</label>
+        <select id="new-ch-type">
+          <option value="youtube_video">YouTube Video (Link o ID)</option>
+          <option value="youtube_playlist">YouTube Playlist (Link o ID)</option>
+          <option value="hls">Stream en vivo (.m3u8)</option>
+        </select>
+      </div>
+      <div class="field">
+        <label>Link o ID del video / playlist / .m3u8</label>
+        <input type="text" id="new-ch-url" placeholder="Pega URL de YouTube, ID o enlace .m3u8">
+      </div>
+      <div class="modal-actions">
+        <button class="action-btn" onclick="cerrarModalCanal()">CANCELAR</button>
+        <button class="action-btn btn-green" onclick="guardarNuevoCanal()">GUARDAR CANAL</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast" id="toast"></div>
+
   <script>
-    // ========================================================
-    // PARRILLA DE CANALES CONFIGURADOS
-    // ========================================================
-    const CANALES = [
+    const STORAGE_KEY = "retrotv90_canales_v1";
+
+    const CANALES_BASE = [
       {
         numero: "02",
-        corto: "CH 02 Caricaturas",
         nombre: "CANAL 02 - CARICATURAS RETRO",
-        programa: "Maratón Clásicos Animados",
-        tipo: "youtube",
-        // Playlist de caricaturas retro clásicas
-        playlistId: "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y"
+        programa: "Clásicos Animados",
+        tipo: "youtube_playlist",
+        valor: "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y"
       },
       {
         numero: "03",
-        corto: "CH 03 Anime",
         nombre: "CANAL 03 - ANIME CLÁSICO",
-        programa: "Bloque Retro Anime 24/7",
-        tipo: "youtube",
-        // Playlist de episodios completos de anime clásico oficial
-        playlistId: "PLxSscENEp7Jis5543635_7X1w1216337_"
+        programa: "Retro Anime",
+        tipo: "youtube_playlist",
+        valor: "PLxSscENEp7Jis5543635_7X1w1216337_"
       },
       {
         numero: "04",
-        corto: "CH 04 Lucha Libre",
         nombre: "CANAL 04 - LUCHA LIBRE",
-        programa: "Funciones Estelares AAA",
-        tipo: "youtube",
-        // Playlist oficial de Lucha Libre AAA Worldwide
-        playlistId: "PL9352431377997654"
+        programa: "Funciones y Combates",
+        tipo: "youtube_playlist",
+        valor: "PL9352431377997654"
       },
       {
         numero: "05",
-        corto: "CH 05 Deportes",
-        nombre: "CANAL 05 - DEPORTES EN VIVO",
-        programa: "Red Bull TV Deportes Extremos",
+        nombre: "CANAL 05 - DEPORTES",
+        programa: "Red Bull TV En Vivo",
         tipo: "hls",
-        url: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
+        valor: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8"
       },
       {
         numero: "06",
-        corto: "CH 06 Películas",
-        nombre: "CANAL 06 - CINE RETRO Y CULT",
-        programa: "Función Estelar Clásica",
-        tipo: "youtube",
-        // Playlist de películas completas clásicas
-        playlistId: "PL3002579207484830"
+        nombre: "CANAL 06 - PELÍCULAS",
+        programa: "Cine Clásico",
+        tipo: "youtube_playlist",
+        valor: "PL3002579207484830"
       },
       {
         numero: "07",
-        corto: "CH 07 Series",
-        nombre: "CANAL 07 - SERIES CLÁSICAS",
-        programa: "Maratón Series Retro",
-        tipo: "youtube",
-        // Playlist de series retro
-        playlistId: "PL5323338982834221"
-      },
-      {
-        numero: "08",
-        corto: "CH 08 Noticias",
-        nombre: "CANAL 08 - DW ESPAÑOL EN VIVO",
-        programa: "Transmisión Internacional 24/7",
-        tipo: "hls",
-        url: "https://dwamdstream104.akamaized.net/hls/live/2015530/dwstream104/index.m3u8"
+        nombre: "CANAL 07 - SERIES",
+        programa: "Series Retro",
+        tipo: "youtube_playlist",
+        valor: "PL5323338982834221"
       }
     ];
 
-    // ========================================================
-    // VARIABLES DE ESTADO DEL TELEVISOR
-    // ========================================================
-    let canalActualIdx = 0;
-    let tvEncendida = true;
-    let silenciado = false;
-    let hlsInstance = null;
+    // Catálogo rápido para filtrar desde el buscador
+    const CATALOGO_RAPIDO = [
+      { titulo: "Caricaturas Retro - Maratón Clásicos", tipo: "youtube_playlist", valor: "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y" },
+      { titulo: "Anime Clásico - Episodios", tipo: "youtube_playlist", valor: "PLxSscENEp7Jis5543635_7X1w1216337_" },
+      { titulo: "Lucha Libre - Funciones Estelares", tipo: "youtube_playlist", valor: "PL9352431377997654" },
+      { titulo: "Deportes En Vivo (Red Bull TV HLS)", tipo: "hls", valor: "https://rbmn-live.akamaized.net/hls/live/590964/BoRB-AT/master.m3u8" },
+      { titulo: "Películas Clásicas", tipo: "youtube_playlist", valor: "PL3002579207484830" },
+      { titulo: "Series Clásicas", tipo: "youtube_playlist", valor: "PL5323338982834221" }
+    ];
+
+    function cargarCanales() {
+      try {
+        const guardados = JSON.parse(localStorage.getItem(STORAGE_KEY));
+        if (Array.isArray(guardados) && guardados.length > 0) return guardados;
+      } catch (e) {}
+      return [...CANALES_BASE];
+    }
+
+    function guardarCanalesStorage() {
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(canales));
+    }
+
+    let canales = cargarCanales();
+    let idxActual = 0;
+    let encendida = true;
+    let muteado = false;
+    let hls = null;
     let ytPlayer = null;
-    let ytApiLista = false;
-    let osdTimeout = null;
+    let ytReady = false;
+    let osdTimer = null;
+    let itemActualCompartible = { titulo: "", url: "" };
 
-    const videoEl = document.getElementById("hls-video");
-    const ytWrapper = document.getElementById("yt-player-wrapper");
-    const staticScreen = document.getElementById("static-screen");
-    const offScreen = document.getElementById("tv-off-screen");
-    const osdOverlay = document.getElementById("osd-overlay");
-    const guideContainer = document.getElementById("channel-guide");
+    const videoEl = document.getElementById("video-player");
+    const ytBox = document.getElementById("yt-player-box");
+    const staticEl = document.getElementById("static-overlay");
+    const offEl = document.getElementById("off-overlay");
+    const osdEl = document.getElementById("osd");
+    const barEl = document.getElementById("channels-bar");
+    const resultsEl = document.getElementById("search-results");
 
-    // Crear botones rápidos de la guía de canales
-    function renderizarGuia() {
-      guideContainer.innerHTML = "";
-      CANALES.forEach((canal, idx) => {
+    function mostrarToast(msg) {
+      const t = document.getElementById("toast");
+      t.textContent = msg;
+      t.style.display = "block";
+      setTimeout(() => { t.style.display = "none"; }, 2600);
+    }
+
+    function mostrarOSD() {
+      if (!encendida) return;
+      osdEl.classList.remove("hidden");
+      clearTimeout(osdTimer);
+      osdTimer = setTimeout(() => osdEl.classList.add("hidden"), 4000);
+    }
+
+    function extraerYouTubeID(input) {
+      const s = input.trim();
+      if (/^[a-zA-Z0-9_-]{11}$/.test(s)) return s;
+      const m1 = s.match(/[?&]v=([a-zA-Z0-9_-]{11})/);
+      if (m1) return m1[1];
+      const m2 = s.match(/youtu\.be\/([a-zA-Z0-9_-]{11})/);
+      if (m2) return m2[1];
+      const m3 = s.match(/embed\/([a-zA-Z0-9_-]{11})/);
+      if (m3) return m3[1];
+      return null;
+    }
+
+    function extraerPlaylistID(input) {
+      const s = input.trim();
+      if (/^(PL|UU|FL|OL|RD)[a-zA-Z0-9_-]+$/.test(s)) return s;
+      const m = s.match(/[?&]list=([a-zA-Z0-9_-]+)/);
+      return m ? m[1] : null;
+    }
+
+    function renderCanalesBar() {
+      barEl.innerHTML = "";
+      canales.forEach((ch, i) => {
         const btn = document.createElement("button");
-        btn.className = `channel-chip ${idx === canalActualIdx ? "active" : ""}`;
-        btn.textContent = canal.corto;
-        btn.onclick = () => sintonizarCanal(idx);
-        guideContainer.appendChild(btn);
+        btn.className = "ch-pill" + (i === idxActual ? " active" : "");
+        btn.textContent = `CH ${ch.numero} · ${ch.nombre.replace(/^CANAL\s*\d+\s*-\s*/i, "")}`;
+        btn.onclick = () => sintonizar(i);
+        barEl.appendChild(btn);
       });
     }
 
-    // Inicializar API de YouTube cuando esté lista
     window.onYouTubeIframeAPIReady = function () {
       ytPlayer = new YT.Player("yt-player", {
         height: "100%",
         width: "100%",
         playerVars: {
           autoplay: 1,
-          controls: 0,
-          disablekb: 1,
+          controls: 1,
           modestbranding: 1,
           rel: 0,
-          showinfo: 0,
-          iv_load_policy: 3,
           playsinline: 1
         },
         events: {
           onReady: () => {
-            ytApiLista = true;
-            sintonizarCanal(canalActualIdx);
-          },
-          onError: () => {
-            // Si algún video de la playlist está bloqueado, salta al siguiente automáticamente
-            if (ytPlayer && ytPlayer.nextVideo) {
-              ytPlayer.nextVideo();
-            }
+            ytReady = true;
+            reproducirDesdeHashSiExiste() || sintonizar(0);
           }
         }
       });
     };
 
-    // Mostrar cartel verde OSD temporalmente
-    function mostrarOSD() {
-      if (!tvEncendida) return;
-      osdOverlay.classList.remove("osd-hidden");
-      clearTimeout(osdTimeout);
-      osdTimeout = setTimeout(() => {
-        osdOverlay.classList.add("osd-hidden");
-      }, 4500);
-    }
-
-    // Función principal para cambiar de canal
-    function sintonizarCanal(index) {
-      if (!tvEncendida) return;
-
-      if (index >= CANALES.length) index = 0;
-      if (index < 0) index = CANALES.length - 1;
-      canalActualIdx = index;
-
-      const canal = CANALES[canalActualIdx];
-
-      // Efecto breve de estática al cambiar
-      staticScreen.classList.add("active");
-      setTimeout(() => staticScreen.classList.remove("active"), 450);
-
-      // Actualizar textos OSD y chips
-      document.getElementById("osd-num").textContent = `CH ${canal.numero}`;
-      document.getElementById("osd-name").textContent = canal.nombre;
-      document.getElementById("osd-prog").textContent = canal.programa;
-      renderizarGuia();
-      mostrarOSD();
-
-      // Limpiar reproductores anteriores
-      if (hlsInstance) {
-        hlsInstance.destroy();
-        hlsInstance = null;
+    function detenerTodo() {
+      if (hls) {
+        hls.destroy();
+        hls = null;
       }
       videoEl.pause();
       videoEl.removeAttribute("src");
+      if (ytReady && ytPlayer && ytPlayer.stopVideo) {
+        try { ytPlayer.stopVideo(); } catch (e) {}
+      }
+    }
 
-      // MODO 1: STREAM EN VIVO (.m3u8)
-      if (canal.tipo === "hls") {
-        ytWrapper.style.display = "none";
-        if (ytApiLista && ytPlayer.stopVideo) ytPlayer.stopVideo();
+    function reproducirFuente({ numero = "YT", titulo, subtitulo, tipo, valor }) {
+      if (!encendida) return;
+      detenerTodo();
+
+      staticEl.classList.add("active");
+      setTimeout(() => staticEl.classList.remove("active"), 350);
+
+      document.getElementById("osd-ch").textContent = `CH ${numero}`;
+      document.getElementById("osd-title").textContent = titulo;
+      document.getElementById("osd-sub").textContent = subtitulo || "";
+      mostrarOSD();
+
+      if (tipo === "hls") {
+        ytBox.style.display = "none";
         videoEl.style.display = "block";
-        videoEl.muted = silenciado;
+        videoEl.muted = muteado;
+
+        itemActualCompartible = { titulo, url: valor };
 
         if (Hls.isSupported()) {
-          hlsInstance = new Hls();
-          hlsInstance.loadSource(canal.url);
-          hlsInstance.attachMedia(videoEl);
-          hlsInstance.on(Hls.Events.MANIFEST_PARSED, () => {
-            videoEl.play().catch(() => {
-              // Si el navegador bloquea autoplay con sonido, inicia en mute
-              videoEl.muted = true;
-              videoEl.play();
-            });
+          hls = new Hls();
+          hls.loadSource(valor);
+          hls.attachMedia(videoEl);
+          hls.on(Hls.Events.MANIFEST_PARSED, () => {
+            videoEl.play().catch(() => {});
           });
         } else if (videoEl.canPlayType("application/vnd.apple.mpegurl")) {
-          videoEl.src = canal.url;
+          videoEl.src = valor;
           videoEl.play().catch(() => {});
         }
-      }
-
-      // MODO 2: PLAYLIST YOUTUBE SIMULANDO TV LINEAL
-      else if (canal.tipo === "youtube") {
+      } else if (tipo === "youtube_video") {
+        const vid = extraerYouTubeID(valor) || valor;
         videoEl.style.display = "none";
-        ytWrapper.style.display = "block";
-
-        if (ytApiLista && ytPlayer) {
-          // Simula que el programa ya va empezado según la hora actual
-          const ahora = new Date();
-          const videoIndex = (ahora.getHours() + ahora.getMinutes()) % 12;
-          const segundoInicio = ahora.getSeconds() * 5;
-
-          ytPlayer.loadPlaylist({
-            list: canal.playlistId,
-            listType: "playlist",
-            index: videoIndex,
-            startSeconds: segundoInicio
-          });
-
-          if (silenciado) ytPlayer.mute();
-          else ytPlayer.unMute();
+        ytBox.style.display = "block";
+        itemActualCompartible = {
+          titulo,
+          url: `https://www.youtube.com/watch?v=${vid}`
+        };
+        if (ytReady && ytPlayer) {
+          ytPlayer.loadVideoById(vid);
+          if (muteado) ytPlayer.mute(); else ytPlayer.unMute();
+        }
+      } else if (tipo === "youtube_playlist") {
+        const pid = extraerPlaylistID(valor) || valor;
+        videoEl.style.display = "none";
+        ytBox.style.display = "block";
+        itemActualCompartible = {
+          titulo,
+          url: `https://www.youtube.com/playlist?list=${pid}`
+        };
+        if (ytReady && ytPlayer) {
+          ytPlayer.loadPlaylist({ list: pid, listType: "playlist", index: 0 });
+          if (muteado) ytPlayer.mute(); else ytPlayer.unMute();
         }
       }
     }
 
-    // Controles de Botones
-    function canalSiguiente() {
-      sintonizarCanal(canalActualIdx + 1);
+    function sintonizar(i) {
+      if (i < 0) i = canales.length - 1;
+      if (i >= canales.length) i = 0;
+      idxActual = i;
+      renderCanalesBar();
+      const ch = canales[idxActual];
+      reproducirFuente({
+        numero: ch.numero,
+        titulo: ch.nombre,
+        subtitulo: ch.programa,
+        tipo: ch.tipo,
+        valor: ch.valor
+      });
     }
 
-    function canalAnterior() {
-      sintonizarCanal(canalActualIdx - 1);
-    }
+    function canalSiguiente() { sintonizar(idxActual + 1); }
+    function canalAnterior() { sintonizar(idxActual - 1); }
 
     function toggleMute() {
-      if (!tvEncendida) return;
-      silenciado = !silenciado;
-      videoEl.muted = silenciado;
-      if (ytApiLista && ytPlayer) {
-        if (silenciado) ytPlayer.mute();
-        else ytPlayer.unMute();
+      muteado = !muteado;
+      videoEl.muted = muteado;
+      if (ytReady && ytPlayer) {
+        if (muteado) ytPlayer.mute(); else ytPlayer.unMute();
       }
-      document.getElementById("btn-mute").textContent = silenciado ? "🔇 MUDO" : "🔊 AUDIO";
-      mostrarOSD();
+      document.getElementById("btn-audio").textContent = muteado ? "MUDO" : "AUDIO";
     }
 
     function togglePower() {
-      tvEncendida = !tvEncendida;
-      const led = document.getElementById("power-led");
-
-      if (!tvEncendida) {
-        offScreen.style.display = "block";
+      encendida = !encendida;
+      const led = document.getElementById("led");
+      if (!encendida) {
+        offEl.style.display = "block";
         led.classList.add("off");
-        if (hlsInstance) hlsInstance.destroy();
-        videoEl.pause();
-        if (ytApiLista && ytPlayer.stopVideo) ytPlayer.stopVideo();
+        detenerTodo();
       } else {
-        offScreen.style.display = "none";
+        offEl.style.display = "none";
         led.classList.remove("off");
-        sintonizarCanal(canalActualIdx);
+        sintonizar(idxActual);
       }
     }
 
-    // Controles con teclado (Flechas Arriba/Abajo y M)
-    document.addEventListener("keydown", (e) => {
-      if (e.key === "ArrowUp" || e.key === "ArrowRight") canalSiguiente();
-      if (e.key === "ArrowDown" || e.key === "ArrowLeft") canalAnterior();
-      if (e.key.toLowerCase() === "m") toggleMute();
-    });
-
-    // Activar audio al primer toque/clic en cualquier parte de la pantalla
-    document.body.addEventListener("click", () => {
-      if (!silenciado && tvEncendida) {
-        videoEl.muted = false;
-        if (ytApiLista && ytPlayer && ytPlayer.unMute) ytPlayer.unMute();
+    // Buscador de YouTube (soporta link/ID directo o filtrar catálogo)
+    function filtrarCatalogo() {
+      const q = document.getElementById("yt-search-input").value.trim().toLowerCase();
+      if (!q) {
+        resultsEl.classList.remove("show");
+        return;
       }
-    }, { once: true });
+      const matches = CATALOGO_RAPIDO.filter(item => item.titulo.toLowerCase().includes(q));
+      resultsEl.innerHTML = "";
 
-    // Arrancar interfaz
-    renderizarGuia();
+      if (extraerYouTubeID(q) || extraerPlaylistID(q)) {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        div.innerHTML = `<span>Enlace / ID de YouTube detectado: <b>${q}</b></span>`;
+        const btn = document.createElement("button");
+        btn.className = "action-btn btn-green";
+        btn.textContent = "REPRODUCIR";
+        btn.onclick = () => ejecutarBusquedaYouTube();
+        div.appendChild(btn);
+        resultsEl.appendChild(div);
+      }
+
+      matches.forEach(m => {
+        const div = document.createElement("div");
+        div.className = "result-item";
+        div.innerHTML = `<span>${m.titulo}</span>`;
+        const btn = document.createElement("button");
+        btn.className = "action-btn btn-green";
+        btn.textContent = "VER";
+        btn.onclick = () => {
+          resultsEl.classList.remove("show");
+          reproducirFuente({
+            numero: "BUSQ",
+            titulo: m.titulo,
+            subtitulo: "Reproducción desde buscador",
+            tipo: m.tipo,
+            valor: m.valor
+          });
+        };
+        div.appendChild(btn);
+        resultsEl.appendChild(div);
+      });
+
+      if (resultsEl.children.length > 0) resultsEl.classList.add("show");
+      else resultsEl.classList.remove("show");
+    }
+
+    function ejecutarBusquedaYouTube() {
+      const raw = document.getElementById("yt-search-input").value.trim();
+      if (!raw) return;
+
+      const vid = extraerYouTubeID(raw);
+      const pid = extraerPlaylistID(raw);
+
+      resultsEl.classList.remove("show");
+
+      if (vid) {
+        reproducirFuente({
+          numero: "YT",
+          titulo: "VIDEO DE YOUTUBE",
+          subtitulo: `ID: ${vid}`,
+          tipo: "youtube_video",
+          valor: vid
+        });
+      } else if (pid) {
+        reproducirFuente({
+          numero: "LIST",
+          titulo: "PLAYLIST DE YOUTUBE",
+          subtitulo: `Lista: ${pid}`,
+          tipo: "youtube_playlist",
+          valor: pid
+        });
+      } else {
+        // Abre búsqueda de YouTube en pestaña nueva si escribió texto libre
+        window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(raw)}`, "_blank");
+        mostrarToast("Abierto en YouTube");
+      }
+    }
+
+    // Compartir video o canal actual
+    async function compartirActual() {
+      const shareUrl = itemActualCompartible.url || window.location.href;
+      const shareTitle = itemActualCompartible.titulo || "Retro TV 90";
+
+      if (navigator.share) {
+        try {
+          await navigator.share({ title: shareTitle, text: `Mira ${shareTitle} en Retro TV 90`, url: shareUrl });
+          return;
+        } catch (e) {}
+      }
+
+      try {
+        await navigator.clipboard.writeText(shareUrl);
+        mostrarToast("Enlace copiado al portapapeles");
+      } catch (e) {
+        prompt("Copia este enlace:", shareUrl);
+      }
+    }
+
+    // Modal agregar canal
+    function abrirModalCanal() {
+      document.getElementById("modal-canal").classList.add("open");
+    }
+
+    function cerrarModalCanal() {
+      document.getElementById("modal-canal").classList.remove("open");
+    }
+
+    function guardarNuevoCanal() {
+      const nombre = document.getElementById("new-ch-name").value.trim();
+      const programa = document.getElementById("new-ch-prog").value.trim() || "Programación Personalizada";
+      const tipo = document.getElementById("new-ch-type").value;
+      const valor = document.getElementById("new-ch-url").value.trim();
+
+      if (!nombre || !valor) {
+        mostrarToast("Completa nombre y enlace/ID");
+        return;
+      }
+
+      const num = String(canales.length + 2).padStart(2, "0");
+      canales.push({
+        numero: num,
+        nombre: nombre.toUpperCase(),
+        programa,
+        tipo,
+        valor
+      });
+
+      guardarCanalesStorage();
+      renderCanalesBar();
+      cerrarModalCanal();
+      document.getElementById("new-ch-name").value = "";
+      document.getElementById("new-ch-prog").value = "";
+      document.getElementById("new-ch-url").value = "";
+      sintonizar(canales.length - 1);
+      mostrarToast("Canal agregado");
+    }
+
+    function reproducirDesdeHashSiExiste() {
+      const params = new URLSearchParams(window.location.search);
+      const v = params.get("v");
+      const list = params.get("list");
+      if (v) {
+        reproducirFuente({ numero: "YT", titulo: "VIDEO COMPARTIDO", subtitulo: "", tipo: "youtube_video", valor: v });
+        return true;
+      }
+      if (list) {
+        reproducirFuente({ numero: "LIST", titulo: "PLAYLIST COMPARTIDA", subtitulo: "", tipo: "youtube_playlist", valor: list });
+        return true;
+      }
+      return false;
+    }
+
+    renderCanalesBar();
   </script>
 </body>
 </html>
