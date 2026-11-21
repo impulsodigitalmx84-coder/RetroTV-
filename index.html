@@ -274,39 +274,6 @@
       border-color: #00f5d4;
     }
 
-    /* Buscador embebido dentro de la app */
-    .embedded-yt-box {
-      background: #141417;
-      border: 1px solid #2b2b33;
-      border-radius: 10px;
-      padding: 8px;
-      display: none;
-      flex-direction: column;
-      gap: 8px;
-    }
-
-    .embedded-yt-box.open {
-      display: flex;
-    }
-
-    .embedded-yt-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      gap: 8px;
-      font-size: 12px;
-      color: #00f5d4;
-      flex-wrap: wrap;
-    }
-
-    .yt-search-frame {
-      width: 100%;
-      height: 240px;
-      border: 1px solid #2a2a32;
-      border-radius: 8px;
-      background: #0c0c0e;
-    }
-
     .search-results-panel {
       background: #141417;
       border: 1px solid #2b2b33;
@@ -418,7 +385,6 @@
       cursor: pointer;
     }
 
-    /* Ajustes específicos para celular */
     @media (max-width: 600px) {
       body {
         padding: 6px;
@@ -461,10 +427,6 @@
       .search-input {
         padding: 6px 8px;
         font-size: 12px;
-      }
-
-      .yt-search-frame {
-        height: 195px;
       }
     }
 
@@ -587,22 +549,13 @@
         type="text"
         id="yt-input"
         class="search-input"
-        placeholder="Buscar en YouTube o pegar link de video / playlist..."
+        placeholder="Pega link de video/playlist o escribe búsqueda..."
         onkeydown="if(event.key==='Enter') buscarOCargarYT()"
       >
       <button class="btn btn-accent" onclick="buscarOCargarYT()">Buscar YT</button>
       <button class="btn" onclick="configurarAPIKeyYT()">API YT</button>
       <button class="btn" onclick="document.getElementById('local-files').click()">Cargar Videos</button>
       <input type="file" id="local-files" accept="video/*" multiple style="display:none" onchange="cargarVideosLocales(event)">
-    </div>
-
-    <!-- Panel interno para buscar/ver dentro de la app -->
-    <div class="embedded-yt-box" id="embedded-yt-box">
-      <div class="embedded-yt-header">
-        <span>BUSCADOR INTERNO · PEGA EL LINK AQUÍ ARRIBA PARA VER EN LA TV</span>
-        <button class="btn" onclick="cerrarBuscadorInterno()">Cerrar</button>
-      </div>
-      <iframe class="yt-search-frame" id="yt-search-frame" src="about:blank"></iframe>
     </div>
 
     <div class="search-results-panel" id="yt-results-panel"></div>
@@ -764,8 +717,6 @@
     const powerOffEl = document.getElementById("power-off");
     const transitionEl = document.getElementById("channel-transition");
     const ytResultsPanel = document.getElementById("yt-results-panel");
-    const embeddedYtBox = document.getElementById("embedded-yt-box");
-    const ytSearchFrame = document.getElementById("yt-search-frame");
 
     function dispararTransicionCanal() {
       transitionEl.classList.remove("active");
@@ -778,11 +729,6 @@
       el.textContent = msg;
       el.style.display = "block";
       setTimeout(() => { el.style.display = "none"; }, 2600);
-    }
-
-    function cerrarBuscadorInterno() {
-      embeddedYtBox.classList.remove("open");
-      ytSearchFrame.src = "about:blank";
     }
 
     function toggleAutoMuteAds() {
@@ -1020,7 +966,6 @@
     }
 
     function cargarVideoDirectoYT(vid, titulo = "VIDEO DE YOUTUBE") {
-      cerrarBuscadorInterno();
       dispararTransicionCanal();
       limpiarReproductores();
       videoEl.style.display = "none";
@@ -1042,7 +987,6 @@
 
       if (pid) {
         ytResultsPanel.classList.remove("open");
-        cerrarBuscadorInterno();
         dispararTransicionCanal();
         limpiarReproductores();
         videoEl.style.display = "none";
@@ -1089,11 +1033,7 @@
         } catch (e) {}
       }
 
-      // Abre panel embebido dentro de la app
-      ytResultsPanel.classList.remove("open");
-      embeddedYtBox.classList.add("open");
-      ytSearchFrame.src = `https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`;
-      toast("Buscador interno abierto");
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, "_blank");
     }
 
     function abrirModal() {
