@@ -24,19 +24,27 @@
       display: flex;
       flex-direction: column;
       align-items: center;
-      justify-content: center;
-      padding: 14px;
-      gap: 12px;
+      justify-content: flex-start;
+      padding: 10px;
+      gap: 8px;
+      overflow-x: hidden;
     }
 
-    /* Barra superior de Buscador y Compartir */
+    .app-stage {
+      width: 100%;
+      max-width: 960px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      transition: transform 0.25s ease;
+    }
+
     .top-bar {
       width: 100%;
-      max-width: 980px;
       background: #22211f;
       border: 2px solid #3a3835;
-      border-radius: 12px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 8px 12px;
       display: flex;
       flex-wrap: wrap;
       gap: 8px;
@@ -46,8 +54,8 @@
 
     .search-box {
       display: flex;
-      flex: 1 1 320px;
-      gap: 8px;
+      flex: 1 1 280px;
+      gap: 6px;
     }
 
     .search-input {
@@ -56,9 +64,9 @@
       border: 2px solid #444;
       color: #39ff14;
       font-family: 'VT323', monospace;
-      font-size: 20px;
-      padding: 6px 12px;
-      border-radius: 8px;
+      font-size: 19px;
+      padding: 5px 10px;
+      border-radius: 7px;
       outline: none;
     }
 
@@ -70,18 +78,17 @@
       background: linear-gradient(180deg, #4b4946, #2d2c2a);
       color: #fff;
       border: 2px solid #161616;
-      border-bottom: 4px solid #111;
-      border-radius: 8px;
-      padding: 7px 12px;
+      border-bottom: 3px solid #111;
+      border-radius: 7px;
+      padding: 6px 10px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
+      font-size: 9px;
       cursor: pointer;
       white-space: nowrap;
     }
 
     .action-btn:active {
       transform: translateY(2px);
-      border-bottom-width: 2px;
     }
 
     .btn-green {
@@ -92,33 +99,32 @@
       background: linear-gradient(180deg, #2563eb, #1d4ed8);
     }
 
-    /* Carcasa Retro TV 90 */
     .tv-casing {
       width: 100%;
-      max-width: 980px;
       background: linear-gradient(145deg, #3c3a37, #242321);
-      border: 5px solid #181817;
-      border-radius: 24px;
-      padding: 18px;
-      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.85);
+      border: 4px solid #181817;
+      border-radius: 20px;
+      padding: 14px;
+      box-shadow: 0 16px 40px rgba(0, 0, 0, 0.85);
       display: flex;
       flex-direction: column;
-      gap: 14px;
+      gap: 10px;
     }
 
     .screen-bezel {
       background: #0c0c0c;
       border: 3px solid #2c2a28;
-      border-radius: 18px;
-      padding: 10px;
+      border-radius: 14px;
+      padding: 8px;
     }
 
     .crt-screen {
       position: relative;
       width: 100%;
       aspect-ratio: 16 / 9;
+      max-height: 54vh;
       background: #050505;
-      border-radius: 12px;
+      border-radius: 10px;
       overflow: hidden;
     }
 
@@ -141,7 +147,7 @@
     .scanlines {
       position: absolute;
       inset: 0;
-      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.28) 50%);
+      background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
       background-size: 100% 4px;
       pointer-events: none;
       z-index: 6;
@@ -149,9 +155,9 @@
 
     .osd {
       position: absolute;
-      top: 16px;
-      left: 18px;
-      right: 18px;
+      top: 12px;
+      left: 14px;
+      right: 14px;
       display: flex;
       justify-content: space-between;
       align-items: flex-start;
@@ -167,31 +173,31 @@
 
     .osd-ch {
       font-family: 'Press Start 2P', monospace;
-      font-size: 20px;
+      font-size: 16px;
       color: #39ff14;
-      margin-bottom: 4px;
+      margin-bottom: 3px;
     }
 
     .osd-title {
-      font-size: 22px;
+      font-size: 20px;
       background: rgba(0, 0, 0, 0.65);
-      padding: 2px 8px;
+      padding: 2px 7px;
       border-left: 3px solid #39ff14;
     }
 
     .osd-sub {
-      font-size: 18px;
+      font-size: 16px;
       color: #ffea00;
       background: rgba(0, 0, 0, 0.65);
-      padding: 2px 8px;
+      padding: 2px 7px;
       margin-top: 2px;
     }
 
     .osd-live {
       background: #c1121f;
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      padding: 6px 8px;
+      font-size: 9px;
+      padding: 5px 7px;
       border-radius: 4px;
     }
 
@@ -204,7 +210,7 @@
       justify-content: center;
       z-index: 7;
       font-family: 'Press Start 2P', monospace;
-      font-size: 13px;
+      font-size: 12px;
       color: #fff;
     }
 
@@ -220,12 +226,11 @@
       z-index: 12;
     }
 
-    /* Barra de canales */
     .channels-bar {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       overflow-x: auto;
-      padding-bottom: 4px;
+      padding-bottom: 3px;
       align-items: center;
     }
 
@@ -234,8 +239,8 @@
       color: #ddd;
       border: 1px solid #484542;
       border-radius: 6px;
-      padding: 6px 12px;
-      font-size: 18px;
+      padding: 5px 10px;
+      font-size: 17px;
       cursor: pointer;
       white-space: nowrap;
     }
@@ -247,16 +252,15 @@
       border-color: #39ff14;
     }
 
-    /* Panel de control inferior */
     .controls-row {
       display: flex;
       flex-wrap: wrap;
       justify-content: space-between;
       align-items: center;
-      gap: 12px;
+      gap: 10px;
       background: #1e1d1b;
-      padding: 12px 16px;
-      border-radius: 14px;
+      padding: 10px 14px;
+      border-radius: 12px;
       border: 2px solid #33312e;
     }
 
@@ -281,13 +285,13 @@
 
     .brand-text {
       font-family: 'Press Start 2P', monospace;
-      font-size: 14px;
+      font-size: 13px;
     }
 
     .brand-90 {
       background: #ff5400;
       font-family: 'Press Start 2P', monospace;
-      font-size: 11px;
+      font-size: 10px;
       padding: 4px 6px;
       border-radius: 4px;
     }
@@ -295,41 +299,38 @@
     .btns {
       display: flex;
       flex-wrap: wrap;
-      gap: 8px;
+      gap: 6px;
     }
 
     .tv-btn {
       background: linear-gradient(180deg, #4a4845, #2e2d2b);
       color: #fff;
       border: 2px solid #151515;
-      border-bottom: 4px solid #111;
+      border-bottom: 3px solid #111;
       border-radius: 7px;
-      padding: 8px 12px;
+      padding: 7px 10px;
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
+      font-size: 9px;
       cursor: pointer;
     }
 
     .tv-btn:active {
       transform: translateY(2px);
-      border-bottom-width: 2px;
     }
 
     .tv-btn.power {
       background: linear-gradient(180deg, #c1121f, #780000);
     }
 
-    /* Resultados rápidos del buscador */
     .search-results {
       width: 100%;
-      max-width: 980px;
       background: #1c1b19;
       border: 2px solid #353330;
-      border-radius: 12px;
-      padding: 10px 14px;
+      border-radius: 10px;
+      padding: 8px 12px;
       display: none;
       flex-direction: column;
-      gap: 8px;
+      gap: 6px;
     }
 
     .search-results.show {
@@ -342,12 +343,11 @@
       align-items: center;
       gap: 10px;
       background: #272523;
-      padding: 8px 12px;
-      border-radius: 8px;
-      font-size: 19px;
+      padding: 6px 10px;
+      border-radius: 7px;
+      font-size: 18px;
     }
 
-    /* Modal para agregar canal */
     .modal-backdrop {
       position: fixed;
       inset: 0;
@@ -365,19 +365,19 @@
 
     .modal {
       width: 100%;
-      max-width: 460px;
+      max-width: 450px;
       background: #242321;
       border: 3px solid #444;
       border-radius: 14px;
-      padding: 18px;
+      padding: 16px;
       display: flex;
       flex-direction: column;
-      gap: 12px;
+      gap: 10px;
     }
 
     .modal h3 {
       font-family: 'Press Start 2P', monospace;
-      font-size: 13px;
+      font-size: 12px;
       color: #39ff14;
     }
 
@@ -397,28 +397,28 @@
       border: 2px solid #444;
       color: #fff;
       font-family: 'VT323', monospace;
-      font-size: 19px;
+      font-size: 18px;
       padding: 6px 10px;
-      border-radius: 8px;
+      border-radius: 7px;
     }
 
     .modal-actions {
       display: flex;
       justify-content: flex-end;
       gap: 8px;
-      margin-top: 6px;
+      margin-top: 4px;
     }
 
     .toast {
       position: fixed;
-      bottom: 18px;
-      right: 18px;
+      bottom: 14px;
+      right: 14px;
       background: #39ff14;
       color: #000;
       font-family: 'Press Start 2P', monospace;
-      font-size: 10px;
-      padding: 10px 14px;
-      border-radius: 8px;
+      font-size: 9px;
+      padding: 9px 12px;
+      border-radius: 7px;
       z-index: 100;
       display: none;
     }
@@ -426,71 +426,68 @@
 </head>
 <body>
 
-  <!-- Buscador de YouTube + Compartir + Agregar Canal -->
-  <div class="top-bar">
-    <div class="search-box">
-      <input
-        type="text"
-        id="yt-search-input"
-        class="search-input"
-        placeholder="Buscar caricaturas, anime, luchas o pega link/ID de YouTube..."
-        oninput="filtrarCatalogo()"
-        onkeydown="if(event.key==='Enter') ejecutarBusquedaYouTube()"
-      >
-      <button class="action-btn btn-green" onclick="ejecutarBusquedaYouTube()">BUSCAR / CARGAR</button>
+  <div class="app-stage" id="app-stage">
+    <div class="top-bar">
+      <div class="search-box">
+        <input
+          type="text"
+          id="yt-search-input"
+          class="search-input"
+          placeholder="Buscar o pegar link/ID de YouTube..."
+          oninput="filtrarCatalogo()"
+          onkeydown="if(event.key==='Enter') ejecutarBusquedaYouTube()"
+        >
+        <button class="action-btn btn-green" onclick="ejecutarBusquedaYouTube()">CARGAR</button>
+      </div>
+      <button class="action-btn" onclick="abrirModalCanal()">+ CANAL</button>
+      <button class="action-btn btn-blue" onclick="compartirActual()">COMPARTIR</button>
+      <button class="action-btn" onclick="rotarPantalla()">GIRAR 90°</button>
     </div>
-    <button class="action-btn" onclick="abrirModalCanal()">+ CANAL</button>
-    <button class="action-btn btn-blue" onclick="compartirActual()">COMPARTIR</button>
-  </div>
 
-  <!-- Lista de resultados rápidos -->
-  <div class="search-results" id="search-results"></div>
+    <div class="search-results" id="search-results"></div>
 
-  <!-- Televisor Retro TV 90 -->
-  <div class="tv-casing">
-    <div class="screen-bezel">
-      <div class="crt-screen">
-        <video id="video-player" playsinline controls></video>
-        <div id="yt-player-box"><div id="yt-player"></div></div>
+    <div class="tv-casing">
+      <div class="screen-bezel">
+        <div class="crt-screen">
+          <video id="video-player" playsinline controls></video>
+          <div id="yt-player-box"><div id="yt-player"></div></div>
 
-        <div class="static-overlay" id="static-overlay">SINTONIZANDO...</div>
-        <div class="off-overlay" id="off-overlay"></div>
+          <div class="static-overlay" id="static-overlay">SINTONIZANDO...</div>
+          <div class="off-overlay" id="off-overlay"></div>
 
-        <div class="osd" id="osd">
-          <div>
-            <div class="osd-ch" id="osd-ch">CH 02</div>
-            <div class="osd-title" id="osd-title">CARICATURAS RETRO</div>
-            <div class="osd-sub" id="osd-sub">Listo para reproducir</div>
+          <div class="osd" id="osd">
+            <div>
+              <div class="osd-ch" id="osd-ch">CH 02</div>
+              <div class="osd-title" id="osd-title">CARICATURAS RETRO</div>
+              <div class="osd-sub" id="osd-sub">Listo para reproducir</div>
+            </div>
+            <div class="osd-live">EN VIVO</div>
           </div>
-          <div class="osd-live">EN VIVO</div>
+
+          <div class="scanlines"></div>
+        </div>
+      </div>
+
+      <div class="channels-bar" id="channels-bar"></div>
+
+      <div class="controls-row">
+        <div class="brand">
+          <div class="led" id="led"></div>
+          <span class="brand-text">RETRO</span>
+          <span class="brand-90">TV 90</span>
         </div>
 
-        <div class="scanlines"></div>
-      </div>
-    </div>
-
-    <!-- Barra de canales -->
-    <div class="channels-bar" id="channels-bar"></div>
-
-    <!-- Controles inferiores -->
-    <div class="controls-row">
-      <div class="brand">
-        <div class="led" id="led"></div>
-        <span class="brand-text">RETRO</span>
-        <span class="brand-90">TV 90</span>
-      </div>
-
-      <div class="btns">
-        <button class="tv-btn" onclick="canalAnterior()">CH -</button>
-        <button class="tv-btn" onclick="canalSiguiente()">CH +</button>
-        <button class="tv-btn" id="btn-audio" onclick="toggleMute()">AUDIO</button>
-        <button class="tv-btn" onclick="mostrarOSD()">INFO</button>
-        <button class="tv-btn power" onclick="togglePower()">POWER</button>
+        <div class="btns">
+          <button class="tv-btn" onclick="canalAnterior()">CH -</button>
+          <button class="tv-btn" onclick="canalSiguiente()">CH +</button>
+          <button class="tv-btn" id="btn-audio" onclick="toggleMute()">AUDIO</button>
+          <button class="tv-btn" onclick="mostrarOSD()">INFO</button>
+          <button class="tv-btn power" onclick="togglePower()">POWER</button>
+        </div>
       </div>
     </div>
   </div>
 
-  <!-- Modal para agregar canal personalizado -->
   <div class="modal-backdrop" id="modal-canal">
     <div class="modal">
       <h3>AGREGAR NUEVO CANAL</h3>
@@ -571,7 +568,6 @@
       }
     ];
 
-    // Catálogo rápido para filtrar desde el buscador
     const CATALOGO_RAPIDO = [
       { titulo: "Caricaturas Retro - Maratón Clásicos", tipo: "youtube_playlist", valor: "PL7XlqX4npddfrdpMCxBnNZXg2GFll7t5y" },
       { titulo: "Anime Clásico - Episodios", tipo: "youtube_playlist", valor: "PLxSscENEp7Jis5543635_7X1w1216337_" },
@@ -597,12 +593,14 @@
     let idxActual = 0;
     let encendida = true;
     let muteado = false;
+    let rotacionGrados = 0;
     let hls = null;
     let ytPlayer = null;
     let ytReady = false;
     let osdTimer = null;
     let itemActualCompartible = { titulo: "", url: "" };
 
+    const appStage = document.getElementById("app-stage");
     const videoEl = document.getElementById("video-player");
     const ytBox = document.getElementById("yt-player-box");
     const staticEl = document.getElementById("static-overlay");
@@ -616,6 +614,12 @@
       t.textContent = msg;
       t.style.display = "block";
       setTimeout(() => { t.style.display = "none"; }, 2600);
+    }
+
+    function rotarPantalla() {
+      rotacionGrados = (rotacionGrados + 90) % 360;
+      appStage.style.transform = `rotate(${rotacionGrados}deg)`;
+      mostrarToast(`Rotación: ${rotacionGrados}°`);
     }
 
     function mostrarOSD() {
@@ -785,7 +789,6 @@
       }
     }
 
-    // Buscador de YouTube (soporta link/ID directo o filtrar catálogo)
     function filtrarCatalogo() {
       const q = document.getElementById("yt-search-input").value.trim().toLowerCase();
       if (!q) {
@@ -858,13 +861,11 @@
           valor: pid
         });
       } else {
-        // Abre búsqueda de YouTube en pestaña nueva si escribió texto libre
         window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(raw)}`, "_blank");
         mostrarToast("Abierto en YouTube");
       }
     }
 
-    // Compartir video o canal actual
     async function compartirActual() {
       const shareUrl = itemActualCompartible.url || window.location.href;
       const shareTitle = itemActualCompartible.titulo || "Retro TV 90";
@@ -884,7 +885,6 @@
       }
     }
 
-    // Modal agregar canal
     function abrirModalCanal() {
       document.getElementById("modal-canal").classList.add("open");
     }
