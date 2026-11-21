@@ -119,12 +119,21 @@
       border-radius: 4px;
     }
 
+    .adguard-pill {
+      background: #198754;
+      color: #fff;
+      font-size: 11px;
+      font-weight: 700;
+      padding: 2px 7px;
+      border-radius: 4px;
+      cursor: pointer;
+    }
+
     .program-name {
       font-size: 13px;
       color: #a0a0ab;
     }
 
-    /* Pantalla limpia con logo transparente y transición de canal */
     .screen-container {
       position: relative;
       width: 100%;
@@ -152,7 +161,6 @@
       display: none;
     }
 
-    /* Logo pequeño y transparente en esquina superior izquierda */
     .corner-watermark {
       position: absolute;
       top: 12px;
@@ -183,7 +191,6 @@
       letter-spacing: 1px;
     }
 
-    /* Transición rápida al cambiar canal */
     .channel-transition {
       position: absolute;
       inset: 0;
@@ -265,6 +272,33 @@
 
     .search-input:focus {
       border-color: #00f5d4;
+    }
+
+    .search-results-panel {
+      background: #141417;
+      border: 1px solid #2b2b33;
+      border-radius: 10px;
+      padding: 10px;
+      display: none;
+      flex-direction: column;
+      gap: 8px;
+      max-height: 220px;
+      overflow-y: auto;
+    }
+
+    .search-results-panel.open {
+      display: flex;
+    }
+
+    .yt-result-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      gap: 10px;
+      background: #1c1c21;
+      padding: 8px 10px;
+      border-radius: 8px;
+      font-size: 13px;
     }
 
     .controls-bar {
@@ -439,6 +473,7 @@
       <div class="channel-meta">
         <span class="canal-label" id="info-canal">CANAL 02</span>
         <span class="live-pill" id="info-badge">EN VIVO</span>
+        <span class="adguard-pill" id="adblock-pill" onclick="toggleAutoMuteAds()" title="Silenciar automáticamente al cambiar de video">ESCUDOS: ON</span>
         <span class="program-name" id="info-programa">Sin Programación</span>
       </div>
     </div>
@@ -447,13 +482,11 @@
       <video id="main-video" playsinline controls></video>
       <div id="yt-box"><div id="yt-player"></div></div>
 
-      <!-- Logo pequeño y transparente en esquina superior izquierda -->
       <div class="corner-watermark" aria-hidden="true">
         <span class="wm-retro">retro</span>
         <span class="wm-tv90">tv 90</span>
       </div>
 
-      <!-- Transición rápida al cambiar canal -->
       <div class="channel-transition" id="channel-transition"></div>
       <div class="power-off-layer" id="power-off"></div>
     </div>
@@ -474,10 +507,13 @@
         placeholder="Buscar en YouTube o pegar link de video / playlist..."
         onkeydown="if(event.key==='Enter') buscarOCargarYT()"
       >
-      <button class="btn btn-accent" onclick="buscarOCargarYT()">YouTube</button>
+      <button class="btn btn-accent" onclick="buscarOCargarYT()">Buscar YT</button>
+      <button class="btn" onclick="configurarAPIKeyYT()">API YT</button>
       <button class="btn" onclick="document.getElementById('local-files').click()">Cargar Videos</button>
       <input type="file" id="local-files" accept="video/*" multiple style="display:none" onchange="cargarVideosLocales(event)">
     </div>
+
+    <div class="search-results-panel" id="yt-results-panel"></div>
 
     <div class="controls-bar">
       <div class="btn-group">
@@ -551,6 +587,7 @@
     ];
 
     const LS_KEY = "retrotv90_canales_consecutivos_v1";
+    const YT_API_KEY_STORAGE = "retrotv90_yt_apikey";
     const DB_NAME = "RetroTV90DB";
     const STORE_NAME = "config";
 
@@ -623,6 +660,7 @@
     let indiceActual = 0;
     let encendida = true;
     let silenciado = false;
+    let escudosActivos = true;
     let hls = null;
     let ytPlayer = null;
     let ytListo = false;
@@ -633,6 +671,7 @@
     const ytBox = document.getElementById("yt-box");
     const powerOffEl = document.getElementById("power-off");
     const transitionEl = document.getElementById("channel-transition");
+    const ytResultsPanel = document.getElementById("yt-results-panel");
 
     function dispararTransicionCanal() {
       transitionEl.classList.remove("active");
@@ -645,6 +684,14 @@
       el.textContent = msg;
       el.style.display = "block";
       setTimeout(() => { el.style.display = "none"; }, 2600);
+    }
+
+    function toggleAutoMuteAds() {
+      escudosActivos = !escudosActivos;
+      const pill = document.getElementById("adblock-pill");
+      pill.textContent = escudosActivos ? "ESCUDOS: ON" : "ESCUDOS: OFF";
+      pill.style.background = escudosActivos ? "#198754" : "#555";
+      toast(escudosActivos ? "Escudos anti-anuncios activos" : "Escudos desactivados");
     }
 
     function formatearTiempo(seg) {
@@ -745,6 +792,11 @@
           onReady: () => {
             ytListo = true;
             if (canales.length) sintonizar(indiceActual);
+          },
+          onStateChange: (ev) => {
+            if (escudosActivos && !silenciado && ev.data === YT.PlayerState.PLAYING) {
+              try { ytPlayer.unMute(); } catch (e) {}
+            }
           }
         }
       });
@@ -859,7 +911,29 @@
       videoEl.onended = () => reproducirArchivoLocal(indiceLocal + 1);
     }
 
-    function buscarOCargarYT() {
+    function configurarAPIKeyYT() {
+      const actual = localStorage.getItem(YT_API_KEY_STORAGE) || "";
+      const nueva = prompt("Pega tu YouTube Data API v3 Key (opcional para búsqueda dentro de la app):", actual);
+      if (nueva !== null) {
+        localStorage.setItem(YT_API_KEY_STORAGE, nueva.trim());
+        toast("API Key actualizada");
+      }
+    }
+
+    function cargarVideoDirectoYT(vid, titulo = "VIDEO DE YOUTUBE") {
+      dispararTransicionCanal();
+      limpiarReproductores();
+      videoEl.style.display = "none";
+      ytBox.style.display = "block";
+      document.getElementById("info-canal").textContent = "YOUTUBE";
+      document.getElementById("info-programa").textContent = titulo;
+      if (ytListo && ytPlayer) {
+        ytPlayer.loadVideoById(vid);
+        if (silenciado) ytPlayer.mute(); else ytPlayer.unMute();
+      }
+    }
+
+    async function buscarOCargarYT() {
       const q = document.getElementById("yt-input").value.trim();
       if (!q) return;
 
@@ -867,6 +941,7 @@
       const vid = extraerVideoID(q);
 
       if (pid) {
+        ytResultsPanel.classList.remove("open");
         dispararTransicionCanal();
         limpiarReproductores();
         videoEl.style.display = "none";
@@ -874,17 +949,46 @@
         document.getElementById("info-canal").textContent = "YOUTUBE PLAYLIST";
         document.getElementById("info-programa").textContent = `Lista: ${pid}`;
         if (ytListo) ytPlayer.loadPlaylist({ list: pid, listType: "playlist", index: 0 });
-      } else if (vid) {
-        dispararTransicionCanal();
-        limpiarReproductores();
-        videoEl.style.display = "none";
-        ytBox.style.display = "block";
-        document.getElementById("info-canal").textContent = "YOUTUBE VIDEO";
-        document.getElementById("info-programa").textContent = `Video: ${vid}`;
-        if (ytListo) ytPlayer.loadVideoById(vid);
-      } else {
-        window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q + " español latino")}`, "_blank");
+        return;
       }
+
+      if (vid) {
+        ytResultsPanel.classList.remove("open");
+        cargarVideoDirectoYT(vid, `Video ID: ${vid}`);
+        return;
+      }
+
+      const apiKey = localStorage.getItem(YT_API_KEY_STORAGE);
+      if (apiKey) {
+        try {
+          const url = `https://www.googleapis.com/youtube/v3/search?part=snippet&type=video&maxResults=8&q=${encodeURIComponent(q)}&key=${encodeURIComponent(apiKey)}`;
+          const res = await fetch(url);
+          const data = await res.json();
+          if (data.items && data.items.length) {
+            ytResultsPanel.innerHTML = "";
+            data.items.forEach(item => {
+              const row = document.createElement("div");
+              row.className = "yt-result-row";
+              const titleSpan = document.createElement("span");
+              titleSpan.textContent = item.snippet.title;
+              const playBtn = document.createElement("button");
+              playBtn.className = "btn btn-accent";
+              playBtn.textContent = "Ver aquí";
+              playBtn.onclick = () => {
+                ytResultsPanel.classList.remove("open");
+                cargarVideoDirectoYT(item.id.videoId, item.snippet.title);
+              };
+              row.appendChild(titleSpan);
+              row.appendChild(playBtn);
+              ytResultsPanel.appendChild(row);
+            });
+            ytResultsPanel.classList.add("open");
+            return;
+          }
+        } catch (e) {}
+      }
+
+      window.open(`https://www.youtube.com/results?search_query=${encodeURIComponent(q)}`, "_blank");
     }
 
     function abrirModal() {
